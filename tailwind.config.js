@@ -18,6 +18,12 @@ module.exports = {
 		},
 	  },
 	  extend: {
+
+		fontFamily: {
+			poppins: "var(--font-poppins)",
+			montserrat: "var(--font-montserrat)",
+			openSans: "var(--font-open-sans)",
+		},
 		colors: {
 		  border: "hsl(var(--border))",
 		  input: "hsl(var(--input))",

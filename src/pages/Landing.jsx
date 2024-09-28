@@ -1,10 +1,12 @@
-import { ModeToggle } from '@/lib/theme/mode-toggle';
 import React from 'react';
+import HorizontalScroll from '@/components/CategoryBar';
+import VideoCardList from '@/components/VideoCardList';
 
 const Landing = () => {
     return (
-        <div className='flex items-center justify-center h-screen'>
-            <ModeToggle />
+        <div className='h-screen'>
+            <HorizontalScroll />
+            <VideoCardList />
         </div>
     );
 }

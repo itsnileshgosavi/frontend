@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Menu, Search, Video, Bell, User } from "lucide-react";
 import Sidebar from "./SidebarLeft";
 import AvatarComponent from "./Avatar";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
@@ -20,16 +21,17 @@ const Header = () => {
       <header className="bg-background text-text p-2 flex items-center justify-between">
         <div className="flex items-center">
           <button
-            className="p-2 pl-5 hover:bg-hover rounded-full"
+            className="p-2 pl-5 hover:bg-hover rounded-full hidden lg:block"
             onClick={() => setIsExpanded(!isExpanded)}
           >
             <Menu size={24} />
           </button>
-          <img
-            src="https://i.postimg.cc/dtQGwJmR/logo.png"
-            alt="Logo"
-            className="h-10 w-10 ml-4 hidden sm:block"
-          />
+          <Link to="/">
+          <img width="48" height="48" className="w-10 h-10 cursor-pointer ml-4 sm:block" src="https://img.icons8.com/color/48/youtube-play.png" alt="youtube-play"/>
+          </Link>
+          <Link to="/">
+          <h1 className="text-xl font-bold cursor-pointer">YouTube</h1>
+          </Link>
         </div>
 
         <div

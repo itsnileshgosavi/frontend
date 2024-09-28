@@ -43,6 +43,9 @@
     --chart-3: 135 53% 46%;
     --chart-4: 45 100% 51%;
     --chart-5: 261 51% 51%;
+    --font-poppins: "Poppins", sans-serif;
+    --font-montserrat: "Montserrat", sans-serif;
+    --font-open-sans: "Open Sans", sans-serif;
   }
 
   .dark {
@@ -58,8 +61,8 @@
     --card: 0 0% 9%;
     --card-foreground: 0 0% 100%;
 
-    --button-bg: 90% 13% 9%;
-    --button-hover: 71% 10% 7%;
+    --button-bg: 0, 2%, 22%;
+    --button-hover: 0, 2%, 29%;
 
     --border: 0 0% 18.4%;
     --input: 0 0% 18.4%;
@@ -93,4 +96,27 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("../public/fonts/Poppins/Poppins-Black.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("../public/fonts/Montserrat/Montserrat-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Open Sans";
+  src: url("../public/fonts/Open_Sans//OpenSans-VariableFont_wdth\,wght.ttf") format("truetype");
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
