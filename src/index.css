@@ -99,17 +99,17 @@
 }
 @font-face {
   font-family: "Poppins";
-  src: url("../public/fonts/Poppins/Poppins-Black.ttf") format("truetype");
+  src: url("./assets/fonts/Poppins/Poppins-Black.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Montserrat";
-  src: url("../public/fonts/Montserrat/Montserrat-VariableFont_wght.ttf") format("truetype");
+  src: url("./assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Open Sans";
-  src: url("../public/fonts/Open_Sans//OpenSans-VariableFont_wdth\,wght.ttf") format("truetype");
+  src: url("./assets/fonts/Open_Sans/OpenSans-VariableFont_wdth\,wght.ttf") format("truetype");
 }
 
 .scrollbar-hidden::-webkit-scrollbar {

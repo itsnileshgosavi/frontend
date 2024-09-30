@@ -42,7 +42,7 @@ const HorizontalScroll = () => {
                 {categories.map((category) => (
                     <button
                         key={category}
-                        className="flex-shrink-0 px-4 py-2 bg-button-bg border border-border rounded-full hover:bg-button-hover transition-colors"
+                        className={`flex-shrink-0 text-sm px-2 py-1 bg-button-bg border border-border rounded-lg hover:bg-button-hover transition-colors ${category == "All" ? "bg-neutral-900 text-white hover:bg-neutral-900 dark:bg-neutral-100 dark:text-black dark:hover:bg-neutral-100" : ""}`}
                     >
                         {category}
                     </button>

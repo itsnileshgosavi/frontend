@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, Youtube } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 
 const SignUp = () => {
     const [email, setEmail] = useState("");
@@ -9,16 +10,42 @@ const SignUp = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [fname, setFname] = useState("");
     const [lname, setLname] = useState("");
-  
-    const handleSubmit = (e) => {
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate(); // Add this line
+
+    const handleSubmit = async (e) => {
       e.preventDefault();
-      // Handle sign-in logic here
-      console.log("Sign in with:", email, password);
+      try {
+        setLoading(true);
+        setError(""); // Clear any previous errors
+        const response = await axios.post("http://localhost:8000/api/user/signup", {
+          firstName: fname,
+          lastName: lname,
+          email,
+          password,
+        });
+        
+        // Check if the signup was successful
+        if (response.data.success) {
+          // Redirect to sign-in page on successful signup
+          navigate("/sign-in");
+        } else {
+          // Set error message if signup wasn't successful
+          setError(response.data.message || "Signup failed. Please try again.");
+        }
+      } catch (error) {
+        // Handle errors from the API call
+        console.error("Signup error:", error);
+        setError(error.response?.data?.message || "An error occurred during signup. Please try again.");
+      } finally {
+        setLoading(false);
+      }
     };
-  
+
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--yt-background)]">
-        <div className="bg-[var(--yt-card-background)] p-8 rounded-lg shadow-md w-full max-w-md">
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="bg-card p-8 rounded-lg shadow-md border border-border w-full max-w-md">
           <div className="flex justify-center items-center mb-6">
             <Youtube className="w-8 h-8 text-primary" />
             <span className="text-xl font-bold ml-2 text-primary">
@@ -109,11 +136,12 @@ const SignUp = () => {
             <Button
               type="submit"
               className="w-full  py-2 px-4 rounded-md  transition duration-300"
+              disabled={loading}
             >
-              Sign In
+              {loading ? "Loading..." : "Sign Up"}
             </Button>
           </form>
-          
+          {error && <p className="text-red-500 text-center">{error}</p>}
           <div className="mt-6 text-center">
             <p className="text-[var(--yt-text)]">
               Already have an account?{" "}
