@@ -42,7 +42,7 @@ const HorizontalScroll = () => {
                 {categories.map((category) => (
                     <button
                         key={category}
-                        className="flex-shrink-0 px-4 py-2 bg-button-bg rounded-full hover:bg-button-hover transition-colors"
+                        className="flex-shrink-0 px-4 py-2 bg-button-bg border border-border rounded-full hover:bg-button-hover transition-colors"
                     >
                         {category}
                     </button>
@@ -51,7 +51,7 @@ const HorizontalScroll = () => {
             {showLeftArrow && (
                 <button
                     onClick={() => scroll('left')}
-                    className="absolute -left-10 top-1/2 transform -translate-y-1/2 bg-background p-2 rounded-full shadow-md lg:block hidden"
+                    className="absolute -left-10 top-1/2 transform -translate-y-1/2 bg-background border border-border hover:bg-button-bg p-2 rounded-full shadow-md lg:block hidden"
                 >
                     <ChevronLeft size={24} />
                 </button>
@@ -59,7 +59,7 @@ const HorizontalScroll = () => {
             {showRightArrow && (
                 <button
                     onClick={() => scroll('right')}
-                    className="absolute -right-10 top-1/2 transform -translate-y-1/2 bg-background p-2 rounded-full shadow-md lg:block hidden"
+                    className="absolute -right-10 top-1/2 transform -translate-y-1/2 bg-background border border-border hover:bg-button-bg p-2 rounded-full shadow-md lg:block hidden"
                 >
                     <ChevronRight size={24} />
                 </button>
