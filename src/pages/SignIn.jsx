@@ -23,7 +23,7 @@ const SignIn = () => {
       const response = await axios.post("http://localhost:8000/api/user/signin", {
         email,
         password,
-      });
+      }, { withCredentials: true });
       if(response.data.success){
         dispatch(setUser(response.data.user)); // Set user in redux
         navigate("/"); // Navigate to home page

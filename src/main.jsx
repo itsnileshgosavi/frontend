@@ -13,14 +13,8 @@ import { ThemeProvider } from './lib/theme/theme-provider.jsx'
 import VideoPage from './pages/Watch.jsx'
 import { Provider } from 'react-redux'
 import store from './redux/reduxStore.js'
+import SelfChannel from './pages/SelfChannel.jsx'
 
-
-const channelData = {
-  channelId: "channel01", channelName: "Code with John", owner: "user01", description:
-    "Coding tutorials and tech reviews by John Doe.", channelBanner:
-    "https://example.com/banners/john_banner.png", subscribers: 5200, videos: ["video01",
-      "video02"],
-}
 
 const Videodata = [
   {
@@ -57,11 +51,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/channel',
-        element: <Channel channelData={channelData} />,
+        element: <SelfChannel  />,
       },
       {
-        path: '/channel/:channelId',
-        element: <Channel channelData={channelData} />,
+        path: '/channel/:handle',
+        element: <Channel  />,
       },
       {
         path: "/watch/:videoId",

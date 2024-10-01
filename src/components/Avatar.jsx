@@ -1,30 +1,35 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuTrigger, DropdownMenuSubContent } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/lib/theme/mode-toggle"
+import { Moon, Sun, Laptop } from "lucide-react"
 import { useTheme } from "@/lib/theme/theme-provider"
+import { useSelector } from "react-redux";
+import Cookies from "js-cookie";
+import CreateChannelDialog from "./CreateChannel"
+import { Link } from "react-router-dom"
 
-const AvatarComponent = ({ src }) => {
+const AvatarComponent = () => {
     const { theme, setTheme } = useTheme();
+    const user = useSelector((state) => state.user.user);
     return (
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Avatar className="cursor-pointer">
-                        <AvatarImage src={src} />
-                        <AvatarFallback>NG</AvatarFallback>
+                        <AvatarImage src={user.avatar} />
+                        <AvatarFallback className="bg-gray-500 text-white">{user.firstName.charAt(0).toUpperCase() + user.lastName.charAt(0).toUpperCase()}</AvatarFallback>
                     </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
                     <DropdownMenuLabel className="flex flex-row items-center gap-2">
                         <Avatar>
-                            <AvatarImage src={src} />
-                            <AvatarFallback>CN</AvatarFallback>
+                            <AvatarImage src={user.avatar} />
+                            <AvatarFallback>{user.firstName.charAt(0).toUpperCase() + user.lastName.charAt(0).toUpperCase()}</AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col items-start justify-start">
-                            <span className="text-sm font-medium">Nilesh Gosavi</span>
-                            <span className="text-xs text-gray-500">@nileshgosavi</span>
-                            <Button variant="link" size="sm" className="w-full m-0 ml-0 pl-0 pr-0">View your channel</Button>
+                            <span className="text-sm font-medium">{user.firstName} {user.lastName}</span>
+                            <span className="text-xs text-gray-500 mt-1">{user.email}</span>
+                            {user.channels.length > 0 ? <Link to="/channel"><span className="text-xs text-blue-500 mt-1">View your channel</span></Link> : <CreateChannelDialog />}
                         </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
@@ -37,7 +42,10 @@ const AvatarComponent = ({ src }) => {
                             Switch Account
 
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => {
+                            Cookies.remove("authtoken");
+                            window.location.reload();
+                        }}>
                             Sign Out
 
                         </DropdownMenuItem>
@@ -59,13 +67,13 @@ const AvatarComponent = ({ src }) => {
                       <DropdownMenuSeparator />
                       <DropdownMenuGroup>
                         <DropdownMenuSub>
-                            <DropdownMenuSubTrigger>Appearance: {theme === "dark" ? "Dark" : "Light"}</DropdownMenuSubTrigger>
+                            <DropdownMenuSubTrigger><Moon className="mr-2" size={16}/> Appearance: {theme === "dark" ? "Dark" : "Light"}</DropdownMenuSubTrigger>
                             <DropdownMenuPortal>
                                 <DropdownMenuSubContent>
-                                    <DropdownMenuItem onClick={() => setTheme("dark")}>Dark Theme</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => setTheme("light")}>Light Theme</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setTheme("dark")}><Moon className="mr-2" size={16}/> Dark Theme</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setTheme("light")}><Sun className="mr-2" size={16}/> Light Theme</DropdownMenuItem>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={() => setTheme("system")}>Use Device Theme</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setTheme("system")}><Laptop className="mr-2" size={16}/> Use Device Theme</DropdownMenuItem>
                                 </DropdownMenuSubContent>
                             </DropdownMenuPortal>
                         </DropdownMenuSub>
