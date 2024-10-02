@@ -1,25 +1,67 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ThumbsUp, ThumbsDown, Share2, Save, MoreHorizontal, User } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import SuggestedVideo from '@/components/SuggestedVideo';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import Loading from '@/components/Loading';
+import { useSelector } from 'react-redux';
+import CommentList from '@/components/CommentList';
+import AddComment from '@/components/AddComment';
 
-const VideoPage = ({ videoData }) => {
-  const {
-    videoId,
-    title,
-    thumbnailUrl,
-    description,
-    channelId,
-    uploader,
-    views,
-    likes,
-    dislikes,
-    uploadDate,
-    comments
-  } = videoData;
 
+const VideoPage = () => {
+  const { videoId } = useParams();
+  const [videoData, setVideoData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [suggestedVideos, setSuggestedVideos] = useState([]);
+  const user = useSelector((state) => state.user.user);
+  const isloggedin = useSelector((state) => state.user.isLoggedIn);
+  const [fetchTrigger, setFetchTrigger] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isDisliked, setIsDisliked] = useState(false);
+  const [commentCount, setCommentCount] = useState(0);
+ //fetch video data
+  const fetchVideoData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`http://localhost:8000/api/video/${videoId}`);
+      setVideoData(response.data.video);
+    } catch (error) {
+      console.error('Error fetching video data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //fetch suggested videos
+  const fetchSuggestedVideos = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/api/videos`);
+      if (response.data.success) {
+        setSuggestedVideos(response.data.videos);
+      }
+    } catch (error) {
+      console.error('Error fetching suggested videos:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchVideoData();
+    fetchSuggestedVideos();
+  }, [videoId]);
+
+  //whenever this function is called, it will trigger a re-fetch of the comments
+  function refreshComments(){
+    setFetchTrigger(prev => !prev);
+  }
+
+  if (loading) {
+    return <Loading />;
+  }
   return (
     <div className="bg-background text-foreground">
       <div className="max-w-[1280px] mx-auto px-4 py-6 lg:py-8 lg:flex lg:space-x-6">
@@ -27,23 +69,23 @@ const VideoPage = ({ videoData }) => {
         <div className="lg:w-2/3">
           {/* Video Player (placeholder) */}
           <div className="aspect-video bg-black mb-4">
-            <img src={thumbnailUrl} alt={title} className="w-full h-full object-cover" />
+            <img src={videoData.thumbnailUrl} alt={videoData.title} className="w-full h-full object-cover" />
           </div>
 
           {/* Video Title */}
-          <h1 className="text-xl font-bold mb-2">{title}</h1>
+          <h1 className="text-xl font-bold mb-2">{videoData.title}</h1>
 
           {/* Video Stats and Actions */}
           <div className="flex flex-wrap items-center justify-between mb-4">
             <div className="text-muted-foreground text-sm">
-              {views.toLocaleString()} views • {new Date(uploadDate).toLocaleDateString()}
+              {videoData.views.toLocaleString()} views • {new Date().toLocaleDateString()}
             </div>
             <div className="flex space-x-2 mt-2 sm:mt-0">
-              <Button variant="outline" size="sm">
-                <ThumbsUp className="mr-2 h-4 w-4" /> {likes.toLocaleString()}
+              <Button variant="outline" size="sm" onClick={() => {setIsLiked(prev => !prev); setIsDisliked(false);}} className={`${isLiked ? 'text-blue-500 hover:text-blue-500' : ''}`}>
+                <ThumbsUp className={`mr-2 h-4 w-4 ${isLiked ? 'text-blue-500' : ''}`} /> {isLiked ? videoData.likes + 1 : videoData.likes}
               </Button>
-              <Button variant="outline" size="sm">
-                <ThumbsDown className="mr-2 h-4 w-4" /> {dislikes.toLocaleString()}
+              <Button variant="outline" size="sm" onClick={() => {setIsDisliked(prev => !prev); setIsLiked(false);}} className={`${isDisliked ? 'text-blue-500 hover:text-blue-500' : ''}`}>
+                <ThumbsDown className={`mr-2 h-4 w-4 ${isDisliked ? 'text-blue-500' : ''}`} /> {isDisliked ? videoData.dislikes + 1 : videoData.dislikes}
               </Button>
               <Button variant="outline" size="sm">
                 <Share2 className="mr-2 h-4 w-4" /> Share
@@ -63,46 +105,42 @@ const VideoPage = ({ videoData }) => {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
               <Avatar className="h-10 w-10 mr-4">
-                <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${uploader}`} />
-                <AvatarFallback>{uploader[0].toUpperCase()}</AvatarFallback>
+                <AvatarImage src={``} />
+                <AvatarFallback>{videoData?.channelId?.charAt(0).toUpperCase() || 'G'}</AvatarFallback>
               </Avatar>
               <div>
-                <h3 className="font-semibold">{uploader}</h3>
+                <h3 className="font-semibold">{videoData.channelId}</h3>
                 <p className="text-sm text-muted-foreground">1M subscribers</p>
               </div>
             </div>
-            <Button>Subscribe</Button>
+            {isSubscribed ? <Button onClick={() => setIsSubscribed(false)} variant="outline" className="bg-gray-800 text-white">Subscribed</Button> : <Button onClick={() => setIsSubscribed(true)}>Subscribe</Button>}
           </div>
 
           {/* Video Description */}
           <div className="bg-secondary p-4 rounded-lg mb-6">
-            <p>{description}</p>
+            <p>{videoData.description}</p>
           </div>
-
+         
           {/* Comments Section */}
           <div>
-            <h3 className="font-semibold mb-4">{comments.length} Comments</h3>
-            {comments.map((comment) => (
-              <div key={comment.commentId} className="flex space-x-4 mb-4">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${comment.userId}`} />
-                  <AvatarFallback>{comment.userId[0].toUpperCase()}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="text-sm font-semibold">{comment.userId} <span className="font-normal text-muted-foreground">{new Date(comment.timestamp).toLocaleDateString()}</span></p>
-                  <p>{comment.text}</p>
-                </div>
-              </div>
-            ))}
+            <h3 className="font-semibold mb-4">{commentCount} Comments</h3>
+            
+            {/* New Comment Form */}
+            {isloggedin && (
+               <AddComment refresh={refreshComments}/>
+            )}
+            
+            {/* Existing Comments */}
+            <CommentList refresh={refreshComments} setCommentCount={setCommentCount} />
           </div>
         </div>
 
         {/* Suggested Videos */}
         <div className="lg:w-1/3 mt-6 lg:mt-0">
           <h2 className="font-semibold mb-4">Suggested Videos</h2>
-          {/* Placeholder for suggested videos */}
-          {suggestedVideoDummyArray.map((i) => (
-            <SuggestedVideo key={i} tittle={i.tittle} channel={i.channel} views={i.views} uploaded={i.uploaded} />
+          
+          {suggestedVideos.map((i) => (
+            <SuggestedVideo key={i._id} videoId={i._id} tittle={i.title} channel={i.channelId} views={i.views} uploaded={new Date().toLocaleDateString()} thumbnailUrl={i.thumbnailUrl}/>
             
           ))}
         </div>
@@ -112,37 +150,3 @@ const VideoPage = ({ videoData }) => {
 };
 
 export default VideoPage;
-
-var suggestedVideoDummyArray =[
-
-  {
-    tittle: "Suggested Video 1",
-    channel: "Channel 1",
-    views: "1M",
-    uploaded: "2 days ago",
-  },
-  {
-    tittle: "Suggested Video 2",
-    channel: "Channel 2",
-    views: "2M",
-    uploaded: "3 days ago",
-  },
-  {
-    tittle: "Suggested Video 3",
-    channel: "Channel 3",
-    views: "3M",
-    uploaded: "4 days ago",
-  },
-  {
-    tittle: "Suggested Video 4",
-    channel: "Channel 4",
-    views: "4M",
-    uploaded: "5 days ago",
-  },
-  {
-    tittle: "Suggested Video 5",
-    channel: "Channel 5",
-    views: "5M",
-    uploaded: "6 days ago",
-  },
-]
