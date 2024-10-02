@@ -1,18 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {VideoCard} from '@/components/VideoCard';
+import axios from 'axios';
+import { useState } from 'react';
 
 const VideoCardList = () => {
+    const [videos, setVideos] = useState([]);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const response = await axios.get("http://localhost:8000/api/videos");
+                setVideos(response.data.videos);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchData();
+    }, []);
     return (
         <div className='flex flex-row flex-wrap mt-20 ml-2 mr-2 lg:ml-20 gap-2 justify-center'>
-            <VideoCard title="This is very long title for testing purpose also this is very long title for" channel="Rick Astley" thumbnail="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" uploaded="10 years ago" views="10 lakh views" channelAvatar="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" />
-            <VideoCard title="test" channel="test" thumbnail="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" uploaded="test" views="test" channelAvatar="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" />
-            <VideoCard title="test" channel="test" thumbnail="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" uploaded="test" views="test" channelAvatar="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" />
-            <VideoCard title="test" channel="test" thumbnail="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" uploaded="test" views="test" channelAvatar="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" />
-            <VideoCard title="test" channel="test" thumbnail="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" uploaded="test" views="test" channelAvatar="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" />
-            <VideoCard title="test" channel="test" thumbnail="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" uploaded="test" views="test" channelAvatar="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" />
-            <VideoCard title="test" channel="test" thumbnail="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" uploaded="test" views="test" channelAvatar="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" />
-            <VideoCard title="test" channel="test" thumbnail="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" uploaded="test" views="test" channelAvatar="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" />
-            <VideoCard title="test" channel="test" thumbnail="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" uploaded="test" views="test" channelAvatar="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" />
+            {videos.map((video) => (
+                <VideoCard key={video._id} id={video._id} title={video.title} channel={"Hitesh Choudhary"} thumbnail={video.thumbnailUrl} uploaded={"11 months ago"} views={video.views} channelAvatar={video.channelAvatar} />
+            ))}
         </div>
     );
 }
