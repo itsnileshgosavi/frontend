@@ -10,6 +10,7 @@ import Loading from '@/components/Loading';
 import { useSelector } from 'react-redux';
 import CommentList from '@/components/CommentList';
 import AddComment from '@/components/AddComment';
+import { Link } from 'react-router-dom';
 
 
 const VideoPage = () => {
@@ -24,6 +25,7 @@ const VideoPage = () => {
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
+  const [channelData, setChannelData] = useState(null);
  //fetch video data
   const fetchVideoData = async () => {
     try {
@@ -49,10 +51,30 @@ const VideoPage = () => {
     }
   };
 
+  const fetchChannelData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/api/channelbyid/${videoData.channel._id}`);
+      if(response.data.success){
+        setChannelData(response.data.channel);
+      }
+    } catch (error) {
+      console.error('Error fetching channel data:', error);
+    }
+  };
+
   useEffect(() => {
     fetchVideoData();
     fetchSuggestedVideos();
   }, [videoId]);
+
+  useEffect(() => {
+    if(videoData){
+      fetchChannelData();
+      // setIsSubscribed(channelData.subscribedBy?.includes(user._id));
+      // setIsLiked(videoData.likedBy?.includes(user._id));
+      // setIsDisliked(videoData.dislikedBy?.includes(user._id));
+    }
+  }, [videoData]);
 
   //whenever this function is called, it will trigger a re-fetch of the comments
   function refreshComments(){
@@ -69,18 +91,39 @@ const VideoPage = () => {
         <div className="lg:w-2/3">
           {/* Video Player (placeholder) */}
           <div className="aspect-video bg-black mb-4">
-            <img src={videoData.thumbnailUrl} alt={videoData.title} className="w-full h-full object-cover" />
+            <img 
+              src={videoData.thumbnailUrl} 
+              alt={videoData.title} 
+              className="w-full h-full object-cover" 
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://via.placeholder.com/640x360?text=Video+Thumbnail";
+              }}
+            />
           </div>
 
           {/* Video Title */}
           <h1 className="text-xl font-bold mb-2">{videoData.title}</h1>
 
-          {/* Video Stats and Actions */}
+          {/* Channel Info, Video Stats and Actions */}
           <div className="flex flex-wrap items-center justify-between mb-4">
-            <div className="text-muted-foreground text-sm">
-              {videoData.views.toLocaleString()} views • {new Date().toLocaleDateString()}
+            <Link to={`/channel/${channelData?.channelId}`}>
+            <div className="flex items-center">
+              <Avatar className="h-10 w-10 mr-4">
+                <AvatarImage src={videoData.channel.avatar} />
+                <AvatarFallback>{videoData?.channel?.name?.charAt(0).toUpperCase()}</AvatarFallback>
+              </Avatar>
+              <div>
+                <h3 className="font-semibold">{videoData.channel.name}</h3>
+                <p className="text-sm text-muted-foreground">{channelData?.subscribers} subscribers</p>
+              </div>
             </div>
+            </Link>
             <div className="flex space-x-2 mt-2 sm:mt-0">
+              {isSubscribed ? 
+                <Button onClick={() => setIsSubscribed(false)} variant="outline" className="bg-gray-800 text-white">Subscribed</Button> : 
+                <Button onClick={() => setIsSubscribed(true)}>Subscribe</Button>
+              }
               <Button variant="outline" size="sm" onClick={() => {setIsLiked(prev => !prev); setIsDisliked(false);}} className={`${isLiked ? 'text-blue-500 hover:text-blue-500' : ''}`}>
                 <ThumbsUp className={`mr-2 h-4 w-4 ${isLiked ? 'text-blue-500' : ''}`} /> {isLiked ? videoData.likes + 1 : videoData.likes}
               </Button>
@@ -91,9 +134,6 @@ const VideoPage = () => {
                 <Share2 className="mr-2 h-4 w-4" /> Share
               </Button>
               <Button variant="outline" size="sm">
-                <Save className="mr-2 h-4 w-4" /> Save
-              </Button>
-              <Button variant="outline" size="sm">
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </div>
@@ -101,23 +141,11 @@ const VideoPage = () => {
 
           <Separator className="my-4" />
 
-          {/* Channel Info */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center">
-              <Avatar className="h-10 w-10 mr-4">
-                <AvatarImage src={``} />
-                <AvatarFallback>{videoData?.channelId?.charAt(0).toUpperCase() || 'G'}</AvatarFallback>
-              </Avatar>
-              <div>
-                <h3 className="font-semibold">{videoData.channelId}</h3>
-                <p className="text-sm text-muted-foreground">1M subscribers</p>
-              </div>
-            </div>
-            {isSubscribed ? <Button onClick={() => setIsSubscribed(false)} variant="outline" className="bg-gray-800 text-white">Subscribed</Button> : <Button onClick={() => setIsSubscribed(true)}>Subscribe</Button>}
-          </div>
-
-          {/* Video Description */}
+          {/* Video Description with Stats */}
           <div className="bg-secondary p-4 rounded-lg mb-6">
+            <div className="text-muted-foreground text-sm mb-2">
+              {videoData.views.toLocaleString()} views • {new Date().toLocaleDateString()}
+            </div>
             <p>{videoData.description}</p>
           </div>
          
@@ -140,7 +168,7 @@ const VideoPage = () => {
           <h2 className="font-semibold mb-4">Suggested Videos</h2>
           
           {suggestedVideos.map((i) => (
-            <SuggestedVideo key={i._id} videoId={i._id} tittle={i.title} channel={i.channelId} views={i.views} uploaded={new Date().toLocaleDateString()} thumbnailUrl={i.thumbnailUrl}/>
+            <SuggestedVideo key={i._id} videoId={i._id} tittle={i.title} channel={i.channel.name} views={i.views} uploaded={new Date(i.createdAt).toLocaleDateString()} thumbnailUrl={i.thumbnailUrl}/>
             
           ))}
         </div>

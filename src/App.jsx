@@ -1,6 +1,7 @@
 import { Sidebar } from "lucide-react"
 import Header from "./components/Header"
 import { Outlet } from "react-router-dom"
+import BottomNavbar from "./components/BottomNav"
 
 function App() {
 
@@ -9,6 +10,7 @@ function App() {
     <>
       <Header toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
       <Outlet />
+      <BottomNavbar />
     </>
   )
 }

@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuTrigger, DropdownMenuSubContent } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { Moon, Sun, Laptop } from "lucide-react"
+import { Moon, Sun, Laptop, User, UserPlus, LogOut, Video, Crown, CreditCard, Database, Languages, MapPin, Keyboard, Settings } from "lucide-react"
 import { useTheme } from "@/lib/theme/theme-provider"
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
@@ -28,44 +28,45 @@ const AvatarComponent = () => {
                         </Avatar>
                         <div className="flex flex-col items-start justify-start">
                             <span className="text-sm font-medium">{user.firstName} {user.lastName}</span>
-                            <span className="text-xs text-gray-500 mt-1">{user.email}</span>
+                            <span className="text-xs text-gray-500 mt-1">{`@${user.channels[0]?.handle}` || user.email}</span>
                             {user.channels.length > 0 ? <Link to="/channel"><span className="text-xs text-blue-500 mt-1">View your channel</span></Link> : <CreateChannelDialog />}
                         </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem disabled>
+                            <User className="mr-2" size={16} />
                             Google Account
-
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem disabled>
+                            <UserPlus className="mr-2" size={16} />
                             Switch Account
-
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => {
                             Cookies.remove("authtoken");
                             window.location.reload();
                         }}>
+                            <LogOut className="mr-2" size={16} />
                             Sign Out
-
                         </DropdownMenuItem>
-
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem disabled>
+                            <Video className="mr-2" size={16} />
                             YouTube Studio
-                            
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem disabled>
+                            <Crown className="mr-2" size={16} />
                             YouTube Premium
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem disabled>
+                            <CreditCard className="mr-2" size={16} />
                             Purchases and Memberships
                         </DropdownMenuItem>
-                         </DropdownMenuGroup>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuGroup>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
                         <DropdownMenuSub>
                             <DropdownMenuSubTrigger><Moon className="mr-2" size={16}/> Appearance: {theme === "dark" ? "Dark" : "Light"}</DropdownMenuSubTrigger>
                             <DropdownMenuPortal>
@@ -77,18 +78,28 @@ const AvatarComponent = () => {
                                 </DropdownMenuSubContent>
                             </DropdownMenuPortal>
                         </DropdownMenuSub>
-                        </DropdownMenuGroup>
-                        <DropdownMenuItem>
-                            Your data in YouTube
-                            
-                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuItem disabled>
+                        <Database className="mr-2" size={16} />
+                        Your data in YouTube
+                    </DropdownMenuItem>
                     
-                    <DropdownMenuItem>Language</DropdownMenuItem>
-                    <DropdownMenuItem>Location</DropdownMenuItem>
-                    <DropdownMenuItem >Keyboard shortcuts</DropdownMenuItem>
+                    <DropdownMenuItem disabled>
+                        <Languages className="mr-2" size={16} />
+                        Language
+                    </DropdownMenuItem>
+                    <DropdownMenuItem disabled>
+                        <MapPin className="mr-2" size={16} />
+                        Location
+                    </DropdownMenuItem>
+                    <DropdownMenuItem disabled>
+                        <Keyboard className="mr-2" size={16} />
+                        Keyboard shortcuts
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                       Settings
+                    <DropdownMenuItem disabled>
+                        <Settings className="mr-2" size={16} />
+                        Settings
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

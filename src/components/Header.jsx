@@ -11,6 +11,9 @@ import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/userSlice";
 import Loading from "./Loading";
 import axios from "axios";
+import { toggleSidebar } from "@/redux/sidebarSlice";
+import CreateDropdown from "./createDropdown";
+
 const Header = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -21,7 +24,6 @@ const Header = () => {
   useEffect(() => {
     const token = Cookies.get("authtoken");
     if(token){
-      const decodedToken = token ? jwtDecode(token) : null;
       const getnewdata = async () => {
         try {
           setLoading(true);
@@ -53,7 +55,7 @@ const Header = () => {
         <div className="flex items-center">
           <button
             className="p-2 pl-5 hover:bg-hover rounded-full hidden lg:block"
-            onClick={() => setIsExpanded(!isExpanded)}
+            onClick={() => {dispatch(toggleSidebar()); setIsExpanded(!isExpanded);}}
           >
             <Menu size={24} />
           </button>
@@ -91,7 +93,7 @@ const Header = () => {
           {isLoggedIn ? (
             <>
               <button className="p-2 hover:bg-hover rounded-full hidden sm:block">
-                <Video size={24} />
+                <CreateDropdown />
               </button>
               <button className="p-2 hover:bg-hover rounded-full hidden sm:block">
                 <Bell size={24} />

@@ -71,13 +71,19 @@ const ChannelPage = () => {
           </div>
           <div className="text-center md:text-left">
             <h1 className="text-2xl font-bold">{data?.channelName}</h1>
-            <p className="text-muted-foreground">@{data?.channelId}</p>
-            <p className="mt-2">
-              <span className="font-semibold">
-                {data?.subscribers.toLocaleString()}
-              </span>{" "}
-              subscribers •{" "}
-              <span className="font-semibold">{data?.videos.length}</span> videos
+            <div className="flex flex-wrap items-center gap-2 mt-1">
+              <p className="text-muted-foreground">@{data?.channelId}</p>
+              <span className="text-muted-foreground">•</span>
+              <p>
+                <span className="font-semibold">{data?.subscribers.toLocaleString()}</span> subscribers
+              </p>
+              <span className="text-muted-foreground">•</span>
+              <p>
+                <span className="font-semibold">{data?.videos.length}</span> videos
+              </p>
+            </div>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {data?.description ? data.description : "No description"}
             </p>
             <button className="flex items-center space-x-2 mt-3 bg-primary text-primary-foreground px-4 py-2 rounded-full hover:bg-primary/90 transition-colors">
               <Bell size={20} />
@@ -85,7 +91,6 @@ const ChannelPage = () => {
             </button>
           </div>
           <div className="flex-grow"></div>
-          
         </div>
       </div>
 
