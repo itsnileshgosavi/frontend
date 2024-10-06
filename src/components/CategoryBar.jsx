@@ -1,9 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from './ui/button';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFilter } from '../redux/filterSlice';
 
 const categories = [
-    'All', 'Music', 'Gaming', 'Sports', 'News', 'Live', 'Fashion',
-    'Learning', 'Spotlight', 'Technology', 'Entertainment', 'Travel', 'Food', "New to you", "Trending", "For you", "Following", "Popular", "More"
+    'All', "music", "gaming", "news", "sports", "technology", "education", "entertainment","comedy", "other", 'Live', 'Fashion', 'Spotlight', 'Travel', 'Food', "New to you", "Trending", "For you", "Following", "Popular", "More"
 ];
 
 const HorizontalScroll = () => {
@@ -11,6 +13,8 @@ const HorizontalScroll = () => {
     const [showLeftArrow, setShowLeftArrow] = useState(false);
     const [showRightArrow, setShowRightArrow] = useState(true);
 
+    const dispatch = useDispatch();
+    const filterCategory = useSelector((state) => state.filter.filterCategory);
     const scroll = (direction) => {
         const container = scrollContainerRef.current;
         if (container) {
@@ -33,19 +37,20 @@ const HorizontalScroll = () => {
     };
 
     return (
-        <div className="relative top-16 max-w-screen-xl mx-auto px-4 text-foreground">
+        <div className="relative top-[70px] max-w-screen-xl mx-auto px-4 text-foreground">
             <div
                 className="flex items-center space-x-4 overflow-x-auto scrollbar-hidden"
                 ref={scrollContainerRef}
                 onScroll={handleScroll}
             >
                 {categories.map((category) => (
-                    <button
+                    <Button
                         key={category}
-                        className={`flex-shrink-0 text-sm px-2 py-1 bg-button-bg border border-border rounded-lg hover:bg-button-hover transition-colors ${category == "All" ? "bg-neutral-900 text-white hover:bg-neutral-900 dark:bg-neutral-100 dark:text-black dark:hover:bg-neutral-100" : ""}`}
+                        onClick={() => dispatch(setFilter(category.toLowerCase()))}
+                        className={`flex-shrink-0 text-sm px-2 py-1 bg-button-bg border border-border rounded-lg hover:bg-button-hover transition-colors ${category.toLowerCase() == filterCategory.toLowerCase() ? "bg-neutral-900 text-white hover:bg-neutral-900 dark:bg-neutral-100 dark:text-black dark:hover:bg-neutral-100" : ""}`}
                     >
                         {category}
-                    </button>
+                    </Button>
                 ))}
             </div>
             {showLeftArrow && (

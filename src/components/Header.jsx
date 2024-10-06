@@ -5,7 +5,6 @@ import AvatarComponent from "./Avatar";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Dropdown from "./DropdownMenu";
-import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/userSlice";
@@ -13,6 +12,7 @@ import Loading from "./Loading";
 import axios from "axios";
 import { toggleSidebar } from "@/redux/sidebarSlice";
 import CreateDropdown from "./createDropdown";
+import { setSearch } from "@/redux/filterSlice";
 
 const Header = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
@@ -21,6 +21,7 @@ const Header = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn); //getting the logged in state
+  const search = useSelector((state) => state.filter.search);
   useEffect(() => {
     const token = Cookies.get("authtoken");
     if(token){
@@ -73,7 +74,9 @@ const Header = () => {
         >
           <div className="flex w-full max-w-[640px] mx-auto">
             <input
-              type="text"
+              type="search"
+              value={search}
+              onChange={(e) => dispatch(setSearch(e.target.value))}
               placeholder="Search"
               className="w-full px-4 py-2 bg-background border border-border rounded-l-full focus:outline-none focus:border-youtube-blue"
             />
@@ -92,20 +95,20 @@ const Header = () => {
           </button>
           {isLoggedIn ? (
             <>
-              <button className="p-2 hover:bg-hover rounded-full hidden sm:block">
+              <div className="p-2 hover:bg-hover rounded-full hidden sm:block">
                 <CreateDropdown />
-              </button>
-              <button className="p-2 hover:bg-hover rounded-full hidden sm:block">
+              </div>
+              <div className="p-2 hover:bg-hover rounded-full hidden sm:block">
                 <Bell size={24} />
-              </button>
-              <button className="p-2 hover:bg-hover rounded-full lg:mr-4">
+              </div>
+              <div className="p-2 hover:bg-hover rounded-full lg:mr-4">
                 <AvatarComponent src="https://avatars.githubusercontent.com/u/109579816?v=4" />
-              </button>
+              </div>
             </>
           ) : (
             <>
             <Dropdown />
-            <Link to="/sign-in" className="flex items-center gap-2 p-2 hover:bg-button-hover rounded-full border border-border">
+            <Link to="/sign-in" className="flex items-center gap-2 p-2 mr-2 hover:bg-button-hover rounded-full border border-border">
               <User size={24} />
               <p>Sign In</p>
             </Link>

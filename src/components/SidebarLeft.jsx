@@ -17,7 +17,7 @@ const Sidebar = ({ isOpen, onClose, isExpanded, setIsExpanded }) => {
  
   return (
     <div 
-      className={`fixed top-14 left-0 h-full bg-background text-text transition-all duration-500 ease-linear hidden lg:block ${
+      className={`fixed top-14 left-0 h-full bg-background text-text ease-linear hidden lg:block ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
       } ${isExpanded ? 'w-48' : 'w-20'} z-50`}
     >

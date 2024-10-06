@@ -6,40 +6,72 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { VideoCard } from "@/components/VideoCard";
 
 const ChannelPage = () => {
   const [data, setData] = useState(null);
+  const [videos, setVideos] = useState(null);
   const [isnotfound, setIsnotfound] = useState(false);
   const [isloading, setIsloading] = useState(false);
  
   const params= useParams();
+
+  //fetch channel data
+  const fetchChannelData = async () => {
+    setIsloading(true);
+    try {
+      const chh = params.handle
+      if (!chh) {
+        console.error('No channel handle available');
+        return;
+      }
+      const response = await axios.get(`http://localhost:8000/api/channel/${params.handle}`, { withCredentials: true });
+      setData(response.data.channel);
+      setIsnotfound(false);
+    } catch (error) {
+      console.log(error);
+      if(error.response.status === 404){
+        setIsnotfound(true);
+      }
+      console.error('Error fetching channel data:', error);
+    }finally{
+      setIsloading(false);
+    }
+  };
+  //fetch chnnel videos
+  const fetchChannelVideos = async () => {
+    try {
+      setIsloading(true);
+      console.log(data._id);
+      const response = await axios.get(`http://localhost:8000/api/videos/channel/${data._id}`, { withCredentials: true });
+      if(response.data.success){
+        setVideos(response.data.videos);
+      }
+      console.log(response.data);
+      console.log(
+        "videos",videos
+      );
+    } catch (error) {
+      console.log(error);
+    }finally{
+      setIsloading(false);
+    }
+  };
   
   useEffect(() => {
-    const fetchChannelData = async () => {
-      setIsloading(true);
-      try {
-        const chh = params.handle
-        if (!chh) {
-          console.error('No channel handle available');
-          return;
-        }
-        const response = await axios.get(`http://localhost:8000/api/channel/${chh}`, { withCredentials: true });
-        setData(response.data.channel);
-        setIsnotfound(false);
-      } catch (error) {
-        console.log(error);
-        if(error.response.status === 404){
-          setIsnotfound(true);
-        }
-        console.error('Error fetching channel data:', error);
-      }finally{
-        setIsloading(false);
-      }
-    };
+   
     if(params.handle){
       fetchChannelData();
     }
   }, [params.handle]);
+
+  useEffect(() => {
+    if(data){
+      fetchChannelVideos();
+    }
+  }, [data]);
+
+
   console.log("data",data);
 
   if(isnotfound){
@@ -107,34 +139,32 @@ const ChannelPage = () => {
           <TabsContent value="home" className="mt-6">
             <h2 className="text-xl font-semibold mb-4">Latest Videos</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {data?.videos.map((videoId) => (
-                <div
-                  key={videoId}
-                  className="bg-card text-card-foreground rounded-lg overflow-hidden shadow-md"
-                >
-                  <div className="aspect-video bg-muted"></div>
-                  <div className="p-4">
-                    <h3 className="font-semibold">Video Title</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      1.2K views • 2 days ago
-                    </p>
-                  </div>
-                </div>
+              {videos && videos?.map((video) => (
+                <VideoCard
+                  key={video._id}
+                  title={video.title}
+                  channel={video.channel.name}
+                  thumbnail={video.thumbnailUrl}
+                  uploaded={video.createdAt.toString().split("T")[0]}
+                  views={video.views}
+                  channelAvatar={video.channel.avatar}
+                  id={video._id}
+                />
               ))}
             </div>
           </TabsContent>
           <TabsContent value="videos">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {data?.videos.map((videoId) => (
+              {videos?.map((video) => (
                 <div
-                  key={videoId}
+                  key={video._id}
                   className="bg-card text-card-foreground rounded-lg overflow-hidden shadow-md"
                 >
                   <div className="aspect-video bg-muted"></div>
                   <div className="p-4">
-                    <h3 className="font-semibold">Video Title</h3>
+                    <h3 className="font-semibold">{video?.title}</h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      1.2K views • 2 days ago
+                      {video?.views} views • {video?.createdAt.toString().split("T")[0]}
                     </p>
                   </div>
                 </div>

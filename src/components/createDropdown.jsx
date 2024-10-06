@@ -9,7 +9,7 @@ export default function CreateDropdown() {
         <>
         <DropdownMenu>
             <DropdownMenuTrigger>
-                <Button variant="ghost"><Video size={24} /></Button>
+                <div className="p-2 hover:bg-hover rounded-full"><Video size={24} /></div>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setIsUploadModalOpen(true)}>

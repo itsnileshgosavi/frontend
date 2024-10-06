@@ -8,7 +8,8 @@ import { useSelector } from "react-redux";
 import Loading from "@/components/Loading";
 import CreateChannelDialog from "@/components/CreateChannel";
 import { useDispatch } from "react-redux";
-
+import { MoreVertical } from "lucide-react";
+import fallbackImage from "../assets/img/video-placeholder.gif";
 
 const OwnChannelPage = () => {
   const  {user}  = useSelector((state) => state.user);
@@ -16,6 +17,7 @@ const OwnChannelPage = () => {
   const [channel, setChannel] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [videos, setVideos] = useState([]);
  useEffect(() => {
   const fetchChannel = async () => {
     
@@ -31,6 +33,32 @@ const OwnChannelPage = () => {
   }
   fetchChannel();
   }, [user, dispatch]);
+
+  //fetch chnnel videos
+  const fetchChannelVideos = async () => {
+    try {
+      setLoading(true);
+      console.log(channel._id);
+      const response = await axios.get(`http://localhost:8000/api/videos/channel/${channel._id}`, { withCredentials: true });
+      if(response.data.success){
+        setVideos(response.data.videos);
+      }
+      console.log(response.data);
+      console.log(
+        "videos",videos
+      );
+    } catch (error) {
+      console.log(error);
+    }finally{
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if(channel){
+      fetchChannelVideos();
+    }
+  }, [channel]);
 
   if (loading) return <Loading />;
  
@@ -63,7 +91,7 @@ const OwnChannelPage = () => {
                 {channel?.subscribers.toLocaleString()}
               </span>{" "}
               subscribers •{" "}
-              <span className="font-semibold">{channel?.videos.length}</span> videos
+              <span className="font-semibold">{videos.length}</span> videos
             </p>
             <button className="flex items-center space-x-2 mt-3 bg-button-bg text-button-foreground px-4 py-2 rounded-full hover:bg-button-hover transition-colors">
               
@@ -88,16 +116,16 @@ const OwnChannelPage = () => {
           <TabsContent value="home" className="mt-6">
             <h2 className="text-xl font-semibold mb-4">Latest Videos</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {channel?.videos.map((videoId) => (
+              {videos.map((video) => (
                 <div
-                  key={videoId}
+                  key={video._id}
                   className="bg-card text-card-foreground rounded-lg overflow-hidden shadow-md"
                 >
                   <div className="aspect-video bg-muted"></div>
                   <div className="p-4">
-                    <h3 className="font-semibold">Video Title</h3>
+                    <h3 className="font-semibold">{video.title}</h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      1.2K views • 2 days ago
+                      {video.views} views • {video.createdAt.toString().split("T")[0]}
                     </p>
                   </div>
                 </div>
@@ -106,17 +134,30 @@ const OwnChannelPage = () => {
           </TabsContent>
           <TabsContent value="videos">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {channel?.videos.map((videoId) => (
+              {videos.map((video) => (
                 <div
-                  key={videoId}
-                  className="bg-card text-card-foreground rounded-lg overflow-hidden shadow-md"
+                  key={video._id}
+                  className="bg-card text-card-foreground rounded-lg overflow-hidden shadow-md relative"
                 >
-                  <div className="aspect-video bg-muted"></div>
+                  <img
+                    src={video.thumbnailUrl}
+                    alt={video.title}
+                    className="w-full aspect-video object-cover"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = fallbackImage;
+                    }}
+                  />
                   <div className="p-4">
-                    <h3 className="font-semibold">Video Title</h3>
+                    <h3 className="font-semibold">{video.title}</h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      1.2K views • 2 days ago
+                      {video.views} views • {video.createdAt.toString().split("T")[0]}
                     </p>
+                  </div>
+                  <div className="absolute top-2 right-2">
+                    <button className="p-2 bg-background/80 rounded-full hover:bg-background">
+                      <MoreVertical size={20} />
+                    </button>
                   </div>
                 </div>
               ))}
