@@ -7,31 +7,33 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import Loading from "@/components/Loading";
 import CreateChannelDialog from "@/components/CreateChannel";
+import VideoCardwithOptions from "@/components/VideoCardwithOptions";
 import { useDispatch } from "react-redux";
-import { MoreVertical } from "lucide-react";
-import fallbackImage from "../assets/img/video-placeholder.gif";
+
+
+
 
 const OwnChannelPage = () => {
-  const  {user}  = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [channel, setChannel] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [videos, setVideos] = useState([]);
- useEffect(() => {
-  const fetchChannel = async () => {
-    
-    try {
-      const response = await axios.get(`http://localhost:8000/api/channel`, {withCredentials: true});
-      setChannel(response.data.channel);
-      console.log(response.data.channel);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    const fetchChannel = async () => {
+
+      try {
+        const response = await axios.get(`http://localhost:8000/api/channel`, { withCredentials: true });
+        setChannel(response.data.channel);
+        console.log(response.data.channel);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     }
-  }
-  fetchChannel();
+    fetchChannel();
   }, [user, dispatch]);
 
   //fetch chnnel videos
@@ -40,29 +42,30 @@ const OwnChannelPage = () => {
       setLoading(true);
       console.log(channel._id);
       const response = await axios.get(`http://localhost:8000/api/videos/channel/${channel._id}`, { withCredentials: true });
-      if(response.data.success){
+      if (response.data.success) {
         setVideos(response.data.videos);
       }
       console.log(response.data);
       console.log(
-        "videos",videos
+        "videos", videos
       );
     } catch (error) {
       console.log(error);
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if(channel){
+    if (channel) {
       fetchChannelVideos();
     }
   }, [channel]);
 
   if (loading) return <Loading />;
- 
+
   return (
+    <>
     <div className="bg-background text-foreground mt-16 ml-0 lg:ml-10">
       {/* Channel Banner */}
       <div className={`w-[95%] h-40 md:h-56 lg:h-64 relative rounded-xl`}>
@@ -94,21 +97,20 @@ const OwnChannelPage = () => {
               <span className="font-semibold">{videos.length}</span> videos
             </p>
             <button className="flex items-center space-x-2 mt-3 bg-button-bg text-button-foreground px-4 py-2 rounded-full hover:bg-button-hover transition-colors">
-              
+
               <span>Customize channel</span>
             </button>
           </div>
           <div className="flex-grow"></div>
-          
+
         </div>
       </div>
-
+      
       {/* Channel Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 min-h-screen">
         <Tabs defaultValue="home">
           <TabsList>
             <TabsTrigger value="home">Home</TabsTrigger>
-            <TabsTrigger value="videos">Videos</TabsTrigger>
             <TabsTrigger value="playlists">Playlists</TabsTrigger>
             <TabsTrigger value="community">Community</TabsTrigger>
             <TabsTrigger value="about">About</TabsTrigger>
@@ -117,49 +119,7 @@ const OwnChannelPage = () => {
             <h2 className="text-xl font-semibold mb-4">Latest Videos</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {videos.map((video) => (
-                <div
-                  key={video._id}
-                  className="bg-card text-card-foreground rounded-lg overflow-hidden shadow-md"
-                >
-                  <div className="aspect-video bg-muted"></div>
-                  <div className="p-4">
-                    <h3 className="font-semibold">{video.title}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {video.views} views • {video.createdAt.toString().split("T")[0]}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </TabsContent>
-          <TabsContent value="videos">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {videos.map((video) => (
-                <div
-                  key={video._id}
-                  className="bg-card text-card-foreground rounded-lg overflow-hidden shadow-md relative"
-                >
-                  <img
-                    src={video.thumbnailUrl}
-                    alt={video.title}
-                    className="w-full aspect-video object-cover"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = fallbackImage;
-                    }}
-                  />
-                  <div className="p-4">
-                    <h3 className="font-semibold">{video.title}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {video.views} views • {video.createdAt.toString().split("T")[0]}
-                    </p>
-                  </div>
-                  <div className="absolute top-2 right-2">
-                    <button className="p-2 bg-background/80 rounded-full hover:bg-background">
-                      <MoreVertical size={20} />
-                    </button>
-                  </div>
-                </div>
+                <VideoCardwithOptions key={video._id} video={video}/>
               ))}
             </div>
           </TabsContent>
@@ -181,7 +141,9 @@ const OwnChannelPage = () => {
           </TabsContent>
         </Tabs>
       </div>
+      
     </div>
+    </>
   );
 };
 

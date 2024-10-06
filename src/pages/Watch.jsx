@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import CommentList from '@/components/CommentList';
 import AddComment from '@/components/AddComment';
 import { Link } from 'react-router-dom';
+import ReactPlayer from 'react-player';
 
 
 const VideoPage = () => {
@@ -38,6 +39,8 @@ const VideoPage = () => {
       setLoading(false);
     }
   };
+
+  console.log(channelData);
 
   //fetch suggested videos
   const fetchSuggestedVideos = async () => {
@@ -70,11 +73,52 @@ const VideoPage = () => {
   useEffect(() => {
     if(videoData){
       fetchChannelData();
-      // setIsSubscribed(channelData.subscribedBy?.includes(user._id));
-      // setIsLiked(videoData.likedBy?.includes(user._id));
-      // setIsDisliked(videoData.dislikedBy?.includes(user._id));
     }
   }, [videoData]);
+
+  useEffect(() => {
+    if(user && channelData){
+      setIsSubscribed(channelData.subscribedBy?.includes(user._id));
+      setIsLiked(videoData.likedBy?.includes(user._id));
+      setIsDisliked(videoData.dislikedBy?.includes(user._id));
+    }
+  }, [user, channelData]);
+
+  //handle subscribe button
+  const handleSubscribeClick = async () => {
+    try {
+      const response = await axios.post(`http://localhost:8000/api/subscribe/${channelData._id}`, {withCredentials: true});
+      if (response.data.success) {
+        setIsSubscribed(true);
+      }
+    } catch (error) {
+      console.error('Error subscribing to channel:', error);
+    }
+  };
+
+  //handle like button
+  const handleLikeClick = async () => {
+    try {
+      const response = await axios.post(`http://localhost:8000/api/like/${videoData._id}`, {withCredentials: true});
+      if (response.data.success) {
+        setIsLiked(true);
+      }
+    } catch (error) {
+      console.error('Error liking video:', error);
+    }
+  };
+
+  //handle dislike button
+  const handleDislikeClick = async () => {
+    try {
+      const response = await axios.post(`http://localhost:8000/api/dislike/${videoData._id}`, {withCredentials: true});
+      if (response.data.success) {
+        setIsDisliked(true);
+      }
+    } catch (error) {
+      console.error('Error disliking video:', error);
+    }
+  };
 
   //whenever this function is called, it will trigger a re-fetch of the comments
   function refreshComments(){
@@ -85,13 +129,13 @@ const VideoPage = () => {
     return <Loading />;
   }
   return (
-    <div className="bg-background text-foreground">
+    <div className="bg-background text-foreground mt-5">
       <div className="max-w-[1280px] mx-auto px-4 py-6 lg:py-8 lg:flex lg:space-x-6">
         {/* Video Player and Info */}
         <div className="lg:w-2/3">
-          {/* Video Player (placeholder) */}
+          {/* Video Player */}
           <div className="aspect-video bg-black mb-4">
-            <img 
+            {videoData.assetUrl ? <ReactPlayer url={videoData.assetUrl} width="100%" height="100%" controls playing={true} stopOnUnmount={false}/> : <img 
               src={videoData.thumbnailUrl} 
               alt={videoData.title} 
               className="w-full h-full object-cover" 
@@ -99,7 +143,7 @@ const VideoPage = () => {
                 e.target.onerror = null;
                 e.target.src = "https://via.placeholder.com/640x360?text=Video+Thumbnail";
               }}
-            />
+            />}
           </div>
 
           {/* Video Title */}

@@ -34,7 +34,7 @@ export function VideoCard({ title, channel, thumbnail, uploaded, views, channelA
                     <CardTitle className="text-md font-medium font-openSans line-clamp-2 cursor-pointer mt-2">{title} </CardTitle>
                     <div className="flex flex-row gap-2">
                         <CardDescription className="text-xs text-gray-500 cursor-pointer"> {channel} </CardDescription>
-                        <CardDescription className="text-xs text-gray-500"> {views} </CardDescription>
+                        <CardDescription className="text-xs text-gray-500"> {views} views </CardDescription>
                         <CardDescription className="text-xs text-gray-500"> {uploaded ? uploaded : "Uploaded "} </CardDescription>
                     </div>
                 </div>

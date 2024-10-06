@@ -4,12 +4,14 @@ import axios from 'axios';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Loading from './Loading';
+
 const VideoCardList = () => {
     const [videos, setVideos] = useState([]);
     const [filteredVideos, setFilteredVideos] = useState(videos);
     const [loading, setLoading] = useState(true);
     const filterCategory = useSelector((state) => state.filter.filterCategory);
     const search = useSelector((state) => state.filter.search);
+ 
     useEffect(() => {
         if (filterCategory == "all") {
             setFilteredVideos(videos);

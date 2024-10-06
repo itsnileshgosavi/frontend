@@ -64,7 +64,7 @@ const Header = () => {
             <img width="48" height="48" className="w-10 h-10 cursor-pointer ml-4 sm:block" src="https://img.icons8.com/color/48/youtube-play.png" alt="youtube-play" />
           </Link>
           <Link to="/">
-            <h1 className="text-xl font-bold cursor-pointer">YouTube</h1>
+            <h1 className="text-2xl font-bold font-sans cursor-pointer">YouTube</h1>
           </Link>
         </div>
 

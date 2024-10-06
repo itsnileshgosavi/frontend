@@ -37,20 +37,20 @@ const HorizontalScroll = () => {
     };
 
     return (
-        <div className="relative top-[70px] max-w-screen-xl mx-auto px-4 text-foreground">
+        <div className="relative top-[70px] max-w-screen-xl mx-auto px-4 text-foreground z-50">
             <div
                 className="flex items-center space-x-4 overflow-x-auto scrollbar-hidden"
                 ref={scrollContainerRef}
                 onScroll={handleScroll}
             >
                 {categories.map((category) => (
-                    <Button
+                    <button
                         key={category}
                         onClick={() => dispatch(setFilter(category.toLowerCase()))}
                         className={`flex-shrink-0 text-sm px-2 py-1 bg-button-bg border border-border rounded-lg hover:bg-button-hover transition-colors ${category.toLowerCase() == filterCategory.toLowerCase() ? "bg-neutral-900 text-white hover:bg-neutral-900 dark:bg-neutral-100 dark:text-black dark:hover:bg-neutral-100" : ""}`}
                     >
                         {category}
-                    </Button>
+                    </button>
                 ))}
             </div>
             {showLeftArrow && (

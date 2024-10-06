@@ -12,6 +12,7 @@ export default function UploadVideoModal({ open, onClose }) {
     const [description, setDescription] = useState("");
     const [thumbnail, setThumbnail] = useState("");
     const [category, setCategory] = useState("");
+    const [assetUrl, setAssetUrl] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
@@ -19,7 +20,7 @@ export default function UploadVideoModal({ open, onClose }) {
         try {
             setLoading(true);
             console.log('category', category)
-            const response = await axios.post("http://localhost:8000/api/video/upload", { title, description, thumbnailUrl: thumbnail, category }, {
+            const response = await axios.post("http://localhost:8000/api/video/upload", { title, description, thumbnailUrl: thumbnail, category, assetUrl }, {
                 withCredentials: true
             });
             if (response.data.success) {
@@ -50,19 +51,19 @@ export default function UploadVideoModal({ open, onClose }) {
                 <form className="space-y-6" onSubmit={handleSubmit}>
                     <div className="space-y-2">
                         <Label htmlFor="title" className="text-sm font-medium">Title</Label>
-                        <Input id="title" className="w-full" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        <Input id="title" className="w-full" value={title} onChange={(e) => setTitle(e.target.value)} required />
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="description" className="text-sm font-medium">Description</Label>
-                        <Input id="description" className="w-full" value={description} onChange={(e) => setDescription(e.target.value)} />
+                        <Input id="description" className="w-full" value={description} onChange={(e) => setDescription(e.target.value)} required />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="thumbnail" className="text-sm font-medium">Thumbnail</Label>
-                        <Input id="thumbnail" className="w-full" value={thumbnail} onChange={(e) => setThumbnail(e.target.value)} />
+                        <Label htmlFor="thumbnail" className="text-sm font-medium">Thumbnail URL</Label>
+                        <Input id="thumbnail" className="w-full" value={thumbnail} onChange={(e) => setThumbnail(e.target.value)} required />
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="category" className="text-sm font-medium">Category</Label>
-                        <Select id="category" onValueChange={(value) => setCategory(value)}>
+                        <Select id="category" onValueChange={(value) => setCategory(value)} required>
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select a category" />
                             </SelectTrigger>
@@ -79,10 +80,10 @@ export default function UploadVideoModal({ open, onClose }) {
                             </SelectContent>
                         </Select>
                     </div>
-                    {/* <div className="space-y-2">
-                        <Label htmlFor="video" className="text-sm font-medium">Video</Label>
-                        <Input id="video" type="file" className="w-full" />
-                    </div> */}
+                    <div className="space-y-2">
+                        <Label htmlFor="asset" className="text-sm font-medium">Video URL</Label>
+                        <Input id="asset" type="url" className="w-full" value={assetUrl} onChange={(e) => setAssetUrl(e.target.value)} required />
+                    </div>
                     <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white" disabled={loading}>{loading ? "Uploading..." : "Upload"}</Button>
                 </form>
             </DialogContent>
