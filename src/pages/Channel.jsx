@@ -7,12 +7,15 @@ import { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { VideoCard } from "@/components/VideoCard";
+import Loading from "@/components/Loading";
 
 const ChannelPage = () => {
   const [data, setData] = useState(null);
   const [videos, setVideos] = useState(null);
   const [isnotfound, setIsnotfound] = useState(false);
   const [isloading, setIsloading] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const user = useSelector((state) => state.user.user);
  
   const params= useParams();
 
@@ -68,17 +71,42 @@ const ChannelPage = () => {
   useEffect(() => {
     if(data){
       fetchChannelVideos();
+      setIsSubscribed(data.subscribedBy.includes(user._id));
     }
+
   }, [data]);
 
 
-  console.log("data",data);
+  //handle subscribe button
+  const handleSubscribeClick = async () => {
+    try {
+      const config = {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+
+      let response;
+      if (isSubscribed) {
+        response = await axios.post(`http://localhost:8000/api/channel/unsubscribe/${data._id}`, {}, config);
+      } else {
+        response = await axios.post(`http://localhost:8000/api/channel/subscribe/${data._id}`, {}, config);
+      }
+
+      if (response.data.success) {
+        setIsSubscribed(prev => !prev);
+      }
+    } catch (error) {
+      console.error('Error subscribing to channel:', error);
+    }
+  };
 
   if(isnotfound){
     return <div className="bg-background text-foreground mt-16 ml-0 lg:ml-10 text-center text-2xl font-bold">Channel not found</div>;
   }
   if(isloading){
-    return <div className="bg-background text-foreground mt-16 ml-0 lg:ml-10 text-center text-2xl font-bold">Loading...</div>;
+    return <Loading/>;
   }
   return (
     <div className="bg-background text-foreground mt-16 ml-0 lg:ml-10">
@@ -111,15 +139,15 @@ const ChannelPage = () => {
               </p>
               <span className="text-muted-foreground">•</span>
               <p>
-                <span className="font-semibold">{data?.videos.length}</span> videos
+                <span className="font-semibold">{videos?.length}</span> videos
               </p>
             </div>
             <p className="mt-2 text-sm text-muted-foreground">
               {data?.description ? data.description : "No description"}
             </p>
-            <button className="flex items-center space-x-2 mt-3 bg-primary text-primary-foreground px-4 py-2 rounded-full hover:bg-primary/90 transition-colors">
+            <button onClick={handleSubscribeClick} className={`flex items-center space-x-2 mt-3 bg-primary text-primary-foreground px-4 py-2 rounded-full hover:bg-primary/90 transition-colors ${isSubscribed ? "!bg-gray-800 text-white" : ""}`}>
               <Bell size={20} />
-              <span>Subscribe</span>
+              <span>{isSubscribed ? "Unsubscribe" : "Subscribe"}</span>
             </button>
           </div>
           <div className="flex-grow"></div>

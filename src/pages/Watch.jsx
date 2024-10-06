@@ -74,7 +74,7 @@ const VideoPage = () => {
     if(videoData){
       fetchChannelData();
     }
-  }, [videoData]);
+  }, [videoData, isSubscribed]);
 
   useEffect(() => {
     if(user && channelData){
@@ -87,9 +87,22 @@ const VideoPage = () => {
   //handle subscribe button
   const handleSubscribeClick = async () => {
     try {
-      const response = await axios.post(`http://localhost:8000/api/subscribe/${channelData._id}`, {withCredentials: true});
+      const config = {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+
+      let response;
+      if (isSubscribed) {
+        response = await axios.post(`http://localhost:8000/api/channel/unsubscribe/${channelData._id}`, {}, config);
+      } else {
+        response = await axios.post(`http://localhost:8000/api/channel/subscribe/${channelData._id}`, {}, config);
+      }
+
       if (response.data.success) {
-        setIsSubscribed(true);
+        setIsSubscribed(prev => !prev);
       }
     } catch (error) {
       console.error('Error subscribing to channel:', error);
@@ -99,9 +112,21 @@ const VideoPage = () => {
   //handle like button
   const handleLikeClick = async () => {
     try {
-      const response = await axios.post(`http://localhost:8000/api/like/${videoData._id}`, {withCredentials: true});
+      const config = {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+      let response;
+      if(isLiked){
+        response = await axios.post(`http://localhost:8000/api/video/unlike/${videoData._id}`, {}, config);
+      }else{
+        response = await axios.post(`http://localhost:8000/api/video/like/${videoData._id}`, {}, config);
+      }
       if (response.data.success) {
-        setIsLiked(true);
+        setIsLiked(prev => !prev);
+        setIsDisliked(false);
       }
     } catch (error) {
       console.error('Error liking video:', error);
@@ -111,9 +136,21 @@ const VideoPage = () => {
   //handle dislike button
   const handleDislikeClick = async () => {
     try {
-      const response = await axios.post(`http://localhost:8000/api/dislike/${videoData._id}`, {withCredentials: true});
+      const config = {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+      let response;
+      if(isDisliked){
+        response = await axios.post(`http://localhost:8000/api/video/undodislike/${videoData._id}`, {}, config);
+      }else{
+        response = await axios.post(`http://localhost:8000/api/video/dislike/${videoData._id}`, {}, config);
+      }
       if (response.data.success) {
-        setIsDisliked(true);
+        setIsDisliked(prev => !prev);
+        setIsLiked(false);
       }
     } catch (error) {
       console.error('Error disliking video:', error);
@@ -165,13 +202,13 @@ const VideoPage = () => {
             </Link>
             <div className="flex space-x-2 mt-2 sm:mt-0">
               {isSubscribed ? 
-                <Button onClick={() => setIsSubscribed(false)} variant="outline" className="bg-gray-800 text-white">Subscribed</Button> : 
-                <Button onClick={() => setIsSubscribed(true)}>Subscribe</Button>
+                <Button onClick={() => handleSubscribeClick()} variant="outline" className="bg-gray-800 text-white">Subscribed</Button> : 
+                <Button onClick={() => handleSubscribeClick()}>Subscribe</Button>
               }
-              <Button variant="outline" size="sm" onClick={() => {setIsLiked(prev => !prev); setIsDisliked(false);}} className={`${isLiked ? 'text-blue-500 hover:text-blue-500' : ''}`}>
+              <Button variant="outline" size="sm" onClick={() => {handleLikeClick()}} className={`${isLiked ? 'text-blue-500 hover:text-blue-500' : ''}`}>
                 <ThumbsUp className={`mr-2 h-4 w-4 ${isLiked ? 'text-blue-500' : ''}`} /> {isLiked ? videoData.likes + 1 : videoData.likes}
               </Button>
-              <Button variant="outline" size="sm" onClick={() => {setIsDisliked(prev => !prev); setIsLiked(false);}} className={`${isDisliked ? 'text-blue-500 hover:text-blue-500' : ''}`}>
+              <Button variant="outline" size="sm" onClick={() => {handleDislikeClick()}} className={`${isDisliked ? 'text-blue-500 hover:text-blue-500' : ''}`}>
                 <ThumbsDown className={`mr-2 h-4 w-4 ${isDisliked ? 'text-blue-500' : ''}`} /> {isDisliked ? videoData.dislikes + 1 : videoData.dislikes}
               </Button>
               <Button variant="outline" size="sm">
