@@ -28,7 +28,7 @@ const AvatarComponent = () => {
                         </Avatar>
                         <div className="flex flex-col items-start justify-start">
                             <span className="text-sm font-medium">{user.firstName} {user.lastName}</span>
-                            <span className="text-xs text-gray-500 mt-1">{`@${user.channels[0]?.handle}` || user.email}</span>
+                            <span className="text-xs text-gray-500 mt-1">{`${user.channels.length>0 ? user.channels[0]?.handle : user.email}`}</span>
                             {user.channels.length > 0 ? <Link to="/channel"><DropdownMenuItem className="text-xs text-blue-500 mt-1" >View your channel</DropdownMenuItem></Link> : <CreateChannelDialog />}
                         </div>
                     </DropdownMenuLabel>

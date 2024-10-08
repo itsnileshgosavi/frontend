@@ -10,7 +10,7 @@ import { DialogDescription } from "@radix-ui/react-dialog";
 export default function UploadVideoModal({ open, onClose }) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [thumbnail, setThumbnail] = useState("");
+    const [thumbnail, setThumbnail] = useState(null);
     const [category, setCategory] = useState("");
     const [assetUrl, setAssetUrl] = useState("");
     const [loading, setLoading] = useState(false);
@@ -19,8 +19,20 @@ export default function UploadVideoModal({ open, onClose }) {
         e.preventDefault();
         try {
             setLoading(true);
-            console.log('category', category)
-            const response = await axios.post("http://localhost:8000/api/video/upload", { title, description, thumbnailUrl: thumbnail, category, assetUrl }, {
+            let thumbnailUrl = null;
+            if (thumbnail) {
+                const formData = new FormData();
+                formData.append('avatar', thumbnail);
+                const thumbnailresponse = await axios.post('http://localhost:8000/api/upload/avatar', formData, {
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                thumbnailUrl = thumbnailresponse.data.fileUrl;
+            }
+
+            const response = await axios.post("http://localhost:8000/api/video/upload", { title, description, thumbnailUrl: thumbnailUrl, category, assetUrl }, {
                 withCredentials: true
             });
             if (response.data.success) {
@@ -58,8 +70,8 @@ export default function UploadVideoModal({ open, onClose }) {
                         <Input id="description" className="w-full" value={description} onChange={(e) => setDescription(e.target.value)} required />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="thumbnail" className="text-sm font-medium">Thumbnail URL</Label>
-                        <Input id="thumbnail" className="w-full" value={thumbnail} onChange={(e) => setThumbnail(e.target.value)} required />
+                        <Label htmlFor="thumbnail" className="text-sm font-medium">Thumbnail</Label>
+                        <Input type="file" id="thumbnail" className="w-full" accept="image/*" onChange={(e) => setThumbnail(e.target.files[0])} required />
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="category" className="text-sm font-medium">Category</Label>

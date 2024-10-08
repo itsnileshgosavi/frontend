@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Users, Video, Bell, ThumbsUp } from "lucide-react";
+import { Users, Video, Camera } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import banner from "../assets/img/banner.jpg";
 import { useState } from "react";
@@ -9,6 +9,7 @@ import Loading from "@/components/Loading";
 import CreateChannelDialog from "@/components/CreateChannel";
 import VideoCardwithOptions from "@/components/VideoCardwithOptions";
 import { useDispatch } from "react-redux";
+
 
 
 
@@ -62,6 +63,24 @@ const OwnChannelPage = () => {
     }
   }, [channel]);
 
+  const handleBannerChange = async(e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append('banner', file);
+    try {
+      setLoading(true);
+      const response = await axios.post(`http://localhost:8000/api/upload/banner/${channel._id}`, formData, { withCredentials: true });
+      if(response.data.success){
+        window.location.reload();
+      }
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }finally{
+      setLoading(false);
+    }
+  }
+
   if (loading) return <Loading />;
 
   return (
@@ -69,11 +88,31 @@ const OwnChannelPage = () => {
     <div className="bg-background text-foreground mt-16 ml-0 lg:ml-10">
       {/* Channel Banner */}
       <div className={`w-[95%] h-40 md:h-56 lg:h-64 relative rounded-xl`}>
-        <img
-          src={banner}
-          alt={`${channel?.channelName} banner`}
-          className="w-full h-full object-cover rounded-xl mx-10"
-        />
+        {channel?.channelBanner ? (
+          <img
+            src={channel.channelBanner}
+            alt={`${channel?.channelName} banner`}
+            className="w-full h-full object-cover rounded-xl mx-10"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-xl mx-10">
+            <label htmlFor="banner-upload" className="cursor-pointer">
+              <div className="text-center">
+                <Camera className="mx-auto h-12 w-12 text-gray-400" />
+                <span className="mt-2 block text-sm font-medium text-gray-600">
+                  Upload Channel Banner
+                </span>
+              </div>
+              <input
+                id="banner-upload"
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={(e) => {handleBannerChange(e)}}
+              />
+            </label>
+          </div>
+        )}
       </div>
 
       {/* Channel Info */}
@@ -81,9 +120,13 @@ const OwnChannelPage = () => {
         <div className="flex flex-col md:flex-row items-center md:items-end space-y-4 md:space-y-0 md:space-x-6">
           <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-background">
             <img
-              src={`https://api.dicebear.com/6.x/initials/svg?seed=${channel?.channelName}`}
+              src={channel?.avatar}
               alt={channel?.channelName}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = `https://api.dicebear.com/6.x/initials/svg?seed=${channel?.channelName}`;//default avatar
+              }}
             />
           </div>
           <div className="text-center md:text-left">

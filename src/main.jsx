@@ -8,7 +8,7 @@ import Loading from './components/Loading.jsx'
 import Landing from './pages/Landing.jsx'
 const SignIn = lazy(() => import('./pages/SignIn.jsx'))
 const SignUp = lazy(() => import('./pages/SignUp.jsx'))
-const Channel = lazy(() => import('./pages/Channels.jsx'))
+const Channel = lazy(() => import('./pages/Channel.jsx'))
 import ErrorPage from './pages/ErrorPage.jsx'
 import { ThemeProvider } from './lib/theme/theme-provider.jsx'
 const VideoPage = lazy(() => import('./pages/Watch.jsx'))

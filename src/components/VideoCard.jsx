@@ -8,9 +8,11 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Link } from "react-router-dom"
 import fallbackImage from '../assets/img/video-placeholder.gif';
+import getRelativeTimeString from "@/lib/helper/dateConverter";
+import { formatViewCount } from "@/lib/helper/viewCountConverter";
 
 
-export function VideoCard({ title, channel, thumbnail, uploaded, views, channelAvatar, id }) {
+export function VideoCard({ title, channel, thumbnail, uploaded, views, channelAvatar, id, channelId }) {
     return (
         <Card className="w-full md:w-[350px] lg:w-[350px] border-none shadow-none">
             <Link to={`/watch/${id}`}>
@@ -26,16 +28,20 @@ export function VideoCard({ title, channel, thumbnail, uploaded, views, channelA
             </Link>
             
             <CardContent className="flex flex-row gap-2">
+                   
                 <Avatar className="w-10 h-10 m-2 mt-3 cursor-pointer">
                     <AvatarImage src={channelAvatar} />
                     <AvatarFallback>{channel.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
+                   
                 <div className="flex flex-col gap-2">
+                    <Link to={`/watch/${id}`}>
                     <CardTitle className="text-md font-medium font-openSans line-clamp-2 cursor-pointer mt-2">{title} </CardTitle>
+                    </Link>
                     <div className="flex flex-row gap-2">
                         <CardDescription className="text-xs text-gray-500 cursor-pointer"> {channel} </CardDescription>
-                        <CardDescription className="text-xs text-gray-500"> {views} views </CardDescription>
-                        <CardDescription className="text-xs text-gray-500"> {uploaded ? uploaded : "Uploaded "} </CardDescription>
+                        <CardDescription className="text-xs text-gray-500"> {formatViewCount(views)} views </CardDescription>
+                        <CardDescription className="text-xs text-gray-500"> {getRelativeTimeString(uploaded)} </CardDescription>
                     </div>
                 </div>
 

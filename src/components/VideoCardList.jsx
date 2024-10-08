@@ -49,7 +49,7 @@ const VideoCardList = () => {
     return (
         <div className='flex flex-row flex-wrap mt-20 ml-2 mr-2 lg:ml-20 gap-2 justify-center'>
             {filteredVideos.map((video) => (
-                <VideoCard key={video._id} id={video._id} title={video.title} channel={video.channel.name} thumbnail={video.thumbnailUrl} uploaded={video.createdAt.toString().slice(0, 10)} views={video.views} channelAvatar={video.channel.avatar} />
+                <VideoCard key={video._id} id={video._id} channelId={video.channel._id} title={video.title} channel={video.channel.name} thumbnail={video.thumbnailUrl} uploaded={video.createdAt.toString().slice(0, 10)} views={video.views} channelAvatar={video.channel.avatar} />
             ))}
         </div>
     );

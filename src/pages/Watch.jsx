@@ -12,6 +12,7 @@ import CommentList from '@/components/CommentList';
 import AddComment from '@/components/AddComment';
 import { Link } from 'react-router-dom';
 import ReactPlayer from 'react-player';
+import getRelativeTimeString from '@/lib/helper/dateConverter';
 
 
 const VideoPage = () => {
@@ -27,7 +28,7 @@ const VideoPage = () => {
   const [isDisliked, setIsDisliked] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
   const [channelData, setChannelData] = useState(null);
- //fetch video data
+  //fetch video data
   const fetchVideoData = async () => {
     try {
       setLoading(true);
@@ -57,7 +58,7 @@ const VideoPage = () => {
   const fetchChannelData = async () => {
     try {
       const response = await axios.get(`http://localhost:8000/api/channelbyid/${videoData.channel._id}`);
-      if(response.data.success){
+      if (response.data.success) {
         setChannelData(response.data.channel);
       }
     } catch (error) {
@@ -71,13 +72,13 @@ const VideoPage = () => {
   }, [videoId]);
 
   useEffect(() => {
-    if(videoData){
+    if (videoData) {
       fetchChannelData();
     }
   }, [videoData, isSubscribed]);
 
   useEffect(() => {
-    if(user && channelData){
+    if (user && channelData) {
       setIsSubscribed(channelData.subscribedBy?.includes(user._id));
       setIsLiked(videoData.likedBy?.includes(user._id));
       setIsDisliked(videoData.dislikedBy?.includes(user._id));
@@ -119,9 +120,9 @@ const VideoPage = () => {
         }
       };
       let response;
-      if(isLiked){
+      if (isLiked) {
         response = await axios.post(`http://localhost:8000/api/video/unlike/${videoData._id}`, {}, config);
-      }else{
+      } else {
         response = await axios.post(`http://localhost:8000/api/video/like/${videoData._id}`, {}, config);
       }
       if (response.data.success) {
@@ -143,9 +144,9 @@ const VideoPage = () => {
         }
       };
       let response;
-      if(isDisliked){
+      if (isDisliked) {
         response = await axios.post(`http://localhost:8000/api/video/undodislike/${videoData._id}`, {}, config);
-      }else{
+      } else {
         response = await axios.post(`http://localhost:8000/api/video/dislike/${videoData._id}`, {}, config);
       }
       if (response.data.success) {
@@ -156,9 +157,19 @@ const VideoPage = () => {
       console.error('Error disliking video:', error);
     }
   };
+  const increamentViews = async () => {
+    try {
+      const res = axios.get(`http://localhost:8000/api/video/view/${videoData._id}`);
+      if (res.data.success) {
+        console.log(res.data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   //whenever this function is called, it will trigger a re-fetch of the comments
-  function refreshComments(){
+  function refreshComments() {
     setFetchTrigger(prev => !prev);
   }
 
@@ -172,10 +183,10 @@ const VideoPage = () => {
         <div className="lg:w-2/3">
           {/* Video Player */}
           <div className="aspect-video bg-black mb-4">
-            {videoData.assetUrl ? <ReactPlayer url={videoData.assetUrl} width="100%" height="100%" controls playing={true} stopOnUnmount={false}/> : <img 
-              src={videoData.thumbnailUrl} 
-              alt={videoData.title} 
-              className="w-full h-full object-cover" 
+            {videoData.assetUrl ? <ReactPlayer url={videoData.assetUrl} width="100%" height="100%" controls playing={true} stopOnUnmount={false} onStart={increamentViews} /> : <img
+              src={videoData.thumbnailUrl}
+              alt={videoData.title}
+              className="w-full h-full object-cover"
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src = "https://via.placeholder.com/640x360?text=Video+Thumbnail";
@@ -189,26 +200,26 @@ const VideoPage = () => {
           {/* Channel Info, Video Stats and Actions */}
           <div className="flex flex-wrap items-center justify-between mb-4">
             <Link to={`/channel/${channelData?.channelId}`}>
-            <div className="flex items-center">
-              <Avatar className="h-10 w-10 mr-4">
-                <AvatarImage src={videoData.channel.avatar} />
-                <AvatarFallback>{videoData?.channel?.name?.charAt(0).toUpperCase()}</AvatarFallback>
-              </Avatar>
-              <div>
-                <h3 className="font-semibold">{videoData.channel.name}</h3>
-                <p className="text-sm text-muted-foreground">{channelData?.subscribers} subscribers</p>
+              <div className="flex items-center">
+                <Avatar className="h-10 w-10 mr-4">
+                  <AvatarImage src={videoData.channel.avatar} />
+                  <AvatarFallback>{videoData?.channel?.name?.charAt(0).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <h3 className="font-semibold">{videoData.channel.name}</h3>
+                  <p className="text-sm text-muted-foreground">{channelData?.subscribers} subscribers</p>
+                </div>
               </div>
-            </div>
             </Link>
             <div className="flex space-x-2 mt-2 sm:mt-0">
-              {isSubscribed ? 
-                <Button onClick={() => handleSubscribeClick()} variant="outline" className="bg-gray-800 text-white">Subscribed</Button> : 
+              {isSubscribed ?
+                <Button onClick={() => handleSubscribeClick()} variant="outline" className="bg-gray-800 text-white">Subscribed</Button> :
                 <Button onClick={() => handleSubscribeClick()}>Subscribe</Button>
               }
-              <Button variant="outline" size="sm" onClick={() => {handleLikeClick()}} className={`${isLiked ? 'text-blue-500 hover:text-blue-500' : ''}`}>
+              <Button variant="outline" size="sm" onClick={() => { handleLikeClick() }} className={`${isLiked ? 'text-blue-500 hover:text-blue-500' : ''}`}>
                 <ThumbsUp className={`mr-2 h-4 w-4 ${isLiked ? 'text-blue-500' : ''}`} /> {isLiked ? videoData.likes + 1 : videoData.likes}
               </Button>
-              <Button variant="outline" size="sm" onClick={() => {handleDislikeClick()}} className={`${isDisliked ? 'text-blue-500 hover:text-blue-500' : ''}`}>
+              <Button variant="outline" size="sm" onClick={() => { handleDislikeClick() }} className={`${isDisliked ? 'text-blue-500 hover:text-blue-500' : ''}`}>
                 <ThumbsDown className={`mr-2 h-4 w-4 ${isDisliked ? 'text-blue-500' : ''}`} /> {isDisliked ? videoData.dislikes + 1 : videoData.dislikes}
               </Button>
               <Button variant="outline" size="sm">
@@ -225,20 +236,20 @@ const VideoPage = () => {
           {/* Video Description with Stats */}
           <div className="bg-secondary p-4 rounded-lg mb-6">
             <div className="text-muted-foreground text-sm mb-2">
-              {videoData.views.toLocaleString()} views • {new Date().toLocaleDateString()}
+              {videoData.views.toLocaleString()} views • {getRelativeTimeString(videoData.createdAt)}
             </div>
             <p>{videoData.description}</p>
           </div>
-         
+
           {/* Comments Section */}
           <div>
             <h3 className="font-semibold mb-4">{commentCount} Comments</h3>
-            
+
             {/* New Comment Form */}
             {isloggedin && (
-               <AddComment refresh={refreshComments}/>
+              <AddComment refresh={refreshComments} />
             )}
-            
+
             {/* Existing Comments */}
             <CommentList refresh={refreshComments} setCommentCount={setCommentCount} />
           </div>
@@ -247,10 +258,10 @@ const VideoPage = () => {
         {/* Suggested Videos */}
         <div className="lg:w-1/3 mt-6 lg:mt-0">
           <h2 className="font-semibold mb-4">Suggested Videos</h2>
-          
+
           {suggestedVideos.map((i) => (
-            <SuggestedVideo key={i._id} videoId={i._id} tittle={i.title} channel={i.channel.name} views={i.views} uploaded={new Date(i.createdAt).toLocaleDateString()} thumbnailUrl={i.thumbnailUrl}/>
-            
+            <SuggestedVideo key={i._id} videoId={i._id} tittle={i.title} channel={i.channel.name} views={i.views} uploaded={i.createdAt} thumbnailUrl={i.thumbnailUrl} />
+
           ))}
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import fallbackThumbnail from "../assets/img/video-placeholder.gif";
+import getRelativeTimeString from "@/lib/helper/dateConverter";
 
 const SuggestedVideo = ({ tittle, channel, views, uploaded, thumbnailUrl, videoId }) => {
   return (
@@ -22,7 +23,7 @@ const SuggestedVideo = ({ tittle, channel, views, uploaded, thumbnailUrl, videoI
           <h4 className="font-semibold">{tittle}</h4>
         
         <p className="text-sm text-muted-foreground">{channel}</p>
-        <p className="text-sm text-muted-foreground">{views} views • {uploaded}</p>
+        <p className="text-sm text-muted-foreground">{views} views • {getRelativeTimeString(uploaded)}</p>
         </Link>
       </div>
     </div>

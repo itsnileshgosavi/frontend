@@ -103,30 +103,40 @@ const ChannelPage = () => {
   };
 
   if(isnotfound){
-    return <div className="bg-background text-foreground mt-16 ml-0 lg:ml-10 text-center text-2xl font-bold">Channel not found</div>;
+    return <div className="bg-background text-foreground mt-32 ml-0 lg:ml-10 text-center text-2xl font-bold">Channel not found</div>;
   }
   if(isloading){
     return <Loading/>;
   }
   return (
-    <div className="bg-background text-foreground mt-16 ml-0 lg:ml-10">
+    <div className="bg-background text-foreground mt-24 ml-0 lg:ml-10">
       {/* Channel Banner */}
-      <div className={`w-[95%] h-40 md:h-56 lg:h-64 relative rounded-xl`}>
+     {data?.channelBanner && (
+        <div className={`w-[95%] h-40 md:h-56 lg:h-64 relative rounded-xl`}>
         <img
-          src={banner}
-          alt={`${data?.channelName} banner`}
+          src={data?.channelBanner}
+          alt={`${data?.channel} banner`}
           className="w-full h-full object-cover rounded-xl mx-10"
+          onError={(e) => {
+            e.target.onError = null;
+            e.target.src = banner;
+          }}
         />
       </div>
+     )}
 
       {/* Channel Info */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 relative z-10">
         <div className="flex flex-col md:flex-row items-center md:items-end space-y-4 md:space-y-0 md:space-x-6">
           <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-background">
             <img
-              src={`https://api.dicebear.com/6.x/initials/svg?seed=${data?.channelName}`}
+              src={data?.avatar}
               alt={data?.channelName}
               className="w-full h-full object-cover"
+              onError={(e)=>{
+                e.target.onError =null
+                e.target.src =`https://api.dicebear.com/6.x/initials/svg?seed=${data?.channelName}`
+              }}
             />
           </div>
           <div className="text-center md:text-left">
@@ -159,7 +169,6 @@ const ChannelPage = () => {
         <Tabs defaultValue="home">
           <TabsList>
             <TabsTrigger value="home">Home</TabsTrigger>
-            <TabsTrigger value="videos">Videos</TabsTrigger>
             <TabsTrigger value="playlists">Playlists</TabsTrigger>
             <TabsTrigger value="community">Community</TabsTrigger>
             <TabsTrigger value="about">About</TabsTrigger>
@@ -181,24 +190,7 @@ const ChannelPage = () => {
               ))}
             </div>
           </TabsContent>
-          <TabsContent value="videos">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {videos?.map((video) => (
-                <div
-                  key={video._id}
-                  className="bg-card text-card-foreground rounded-lg overflow-hidden shadow-md"
-                >
-                  <div className="aspect-video bg-muted"></div>
-                  <div className="p-4">
-                    <h3 className="font-semibold">{video?.title}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {video?.views} views • {video?.createdAt.toString().split("T")[0]}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </TabsContent>
+         
           <TabsContent value="playlists">{/* Playlists content */}</TabsContent>
           <TabsContent value="community">{/* Community content */}</TabsContent>
           <TabsContent value="about">

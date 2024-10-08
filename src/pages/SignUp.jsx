@@ -11,6 +11,7 @@ const SignUp = () => {
     const [fname, setFname] = useState("");
     const [lname, setLname] = useState("");
     const [error, setError] = useState("");
+    const [avatar, setAvatar] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate(); // Add this line
 
@@ -19,11 +20,26 @@ const SignUp = () => {
       try {
         setLoading(true);
         setError(""); // Clear any previous errors
+          // Upload avatar if it exists
+      let avatarUrl = null;
+      if (avatar) {
+        const formData = new FormData();
+        formData.append('avatar', avatar);
+        const avatarResponse = await axios.post('http://localhost:8000/api/upload/avatar', formData, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        avatarUrl = avatarResponse.data.fileUrl;
+      }
+        
         const response = await axios.post("http://localhost:8000/api/user/signup", {
           firstName: fname,
           lastName: lname,
           email,
           password,
+          avatar:avatarUrl
         });
         
         // Check if the signup was successful
@@ -102,6 +118,21 @@ const SignUp = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="avatar"
+                className="block text-sm font-medium text-secondary-foreground mb-1"
+              >
+                Profile Photo
+              </label>
+              <input
+                type="file"
+                id="avatar"
+                accept="image/*"
+                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring bg-input text-secondary-foreground pr-10"
+                onChange={(e) => setAvatar(e.target.files[0])}
               />
             </div>
             <div className="mb-6 relative">

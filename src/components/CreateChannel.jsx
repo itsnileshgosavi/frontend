@@ -12,52 +12,75 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '@/redux/userSlice';
 
 const CreateChannelDialog = () => {
-    const user = useSelector((state) => state.user.user);
-    const [loading, setLoading] = useState(false);
+  const user = useSelector((state) => state.user.user);
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [channelName, setChannelName] = useState(user.firstName + ' ' + user.lastName);
+  const [avatarFile, setAvatarFile] = useState(null);
   const [avatar, setAvatar] = useState(null);
   const [error, setError] = useState('');
   const [channelHandle, setChannelHandle] = useState(user.email.split('@')[0]);
   const dispatch = useDispatch();
 
   const handleCreate = async () => {
-   try {
-    setLoading(true);
-    if (channelName.trim() === '') {
+    try {
+      setLoading(true);
+      if (channelName.trim() === '') {
         setError('Channel name is required.');
         return;
       }
-      const response  = await axios.post('http://localhost:8000/api/channel/create', { channelId:channelHandle, channelName:channelName},
+
+      // Upload avatar if it exists
+      let avatarUrl = null;
+      if (avatar) {
+        const formData = new FormData();
+        formData.append('avatar', avatarFile);
+        const avatarResponse = await axios.post('http://localhost:8000/api/upload/avatar', formData, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        avatarUrl = avatarResponse.data.fileUrl;
+      }
+
+      const response = await axios.post('http://localhost:8000/api/channel/create', 
+        { 
+          channelId: channelHandle, 
+          channelName: channelName,
+          avatar: avatarUrl
+        },
         { withCredentials: true }
       );
+
       if (response.data.success) {
-      dispatch(setUser({
-        ...user,
-        channels: [
-          ...(user.channels || []),
-          { _id: response.data.newChannel._id, handle: response.data.channelId }
-        ],
-        channel: response.data.newChannel
-      }));
-      setOpen(false);
-      setChannelName('');
-      setChannelHandle('');
-      setAvatar(null);
-      setError('');
+        dispatch(setUser({
+          ...user,
+          channels: [
+            ...(user.channels || []),
+            { _id: response.data.newChannel._id, handle: response.data.channelId }
+          ],
+          channel: response.data.newChannel
+        }));
+        setOpen(false);
+        setChannelName('');
+        setChannelHandle('');
+        setAvatar(null);
+        setError('');
+      }
+    } catch (error) {
+      console.error(error);
+      setError(error.response?.data?.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
     }
-   } catch (error) {
-    console.error(error);
-    setError(error.response?.data?.message || 'Something went wrong');
-   }finally{
-    setLoading(false);
-   }
   };
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setAvatar(URL.createObjectURL(file));
+      setAvatarFile(file);
     }
   };
 
