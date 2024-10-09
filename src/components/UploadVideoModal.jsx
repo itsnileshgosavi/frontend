@@ -94,7 +94,7 @@ export default function UploadVideoModal({ open, onClose }) {
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="asset" className="text-sm font-medium">Video URL</Label>
-                        <Input id="asset" type="url" className="w-full" value={assetUrl} onChange={(e) => setAssetUrl(e.target.value)} required />
+                        <Input id="asset" type="url" className="w-full" placeholder="enter vimeo, youtube or anyother public video link" value={assetUrl} onChange={(e) => setAssetUrl(e.target.value)} required />
                     </div>
                     <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white" disabled={loading}>{loading ? "Uploading..." : "Upload"}</Button>
                 </form>

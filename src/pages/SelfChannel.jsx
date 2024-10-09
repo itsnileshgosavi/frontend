@@ -9,6 +9,7 @@ import Loading from "@/components/Loading";
 import CreateChannelDialog from "@/components/CreateChannel";
 import VideoCardwithOptions from "@/components/VideoCardwithOptions";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 
 
 
@@ -16,6 +17,7 @@ import { useDispatch } from "react-redux";
 
 const OwnChannelPage = () => {
   const { user } = useSelector((state) => state.user);
+  const isloggedIn = useSelector((state) => state.user.isLoggedIn);
   const dispatch = useDispatch();
   const [channel, setChannel] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -63,6 +65,26 @@ const OwnChannelPage = () => {
     }
   }, [channel]);
 
+  if(!isloggedIn){
+    return (
+      <div className="bg-background text-foreground mt-16 ml-0 lg:ml-10 text-center">
+        
+      <h1 className="text-4xl font-bold"> Please Login to view your channel</h1>
+      <Link to="/sign-in">
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-3 my-3">
+          Login
+        </button>
+      </Link>
+      <Link to="/sign-up">
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-3 my-3">
+          Signup
+        </button>
+      </Link>
+
+      </div>
+    )
+  }
+
   const handleBannerChange = async(e) => {
     const file = e.target.files[0];
     const formData = new FormData();
@@ -82,6 +104,14 @@ const OwnChannelPage = () => {
   }
 
   if (loading) return <Loading />;
+
+  if(!channel){
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+          <h1 className="text-4xl">Channel does not exist please create one.</h1>
+      </div>
+    )
+  }
 
   return (
     <>

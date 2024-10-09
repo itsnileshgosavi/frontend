@@ -20,6 +20,7 @@ module.exports = {
 	  extend: {
 
 		fontFamily: {
+			roboto: "var(--font-roboto)",
 			poppins: "var(--font-poppins)",
 			montserrat: "var(--font-montserrat)",
 			openSans: "var(--font-open-sans)",

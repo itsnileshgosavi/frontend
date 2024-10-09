@@ -61,10 +61,10 @@ const Header = () => {
             <Menu size={24} />
           </button>
           <Link to="/">
-            <img width="48" height="48" className="w-10 h-10 cursor-pointer ml-4 sm:block" src="https://img.icons8.com/color/48/youtube-play.png" alt="youtube-play" />
+            <img  className="w-10 h-10 cursor-pointer ml-4 sm:block" src="https://img.icons8.com/color/48/youtube-play.png" alt="youtube-play" />
           </Link>
           <Link to="/">
-            <h1 className="text-2xl font-bold font-sans cursor-pointer">YouTube</h1>
+            <h1 className={`text-xl lg:text-2xl font-semibold font-roboto cursor-pointer ${isSearchVisible ? "hidden" :"block"}`}>YouTube</h1>
           </Link>
         </div>
 
@@ -102,13 +102,13 @@ const Header = () => {
                 <Bell size={24} />
               </div>
               <div className="p-2 hover:bg-hover rounded-full lg:mr-4">
-                <AvatarComponent src="https://avatars.githubusercontent.com/u/109579816?v=4" />
+                <AvatarComponent  />
               </div>
             </>
           ) : (
             <>
             <Dropdown />
-            <Link to="/sign-in" className="flex items-center gap-2 p-2 mr-2 hover:bg-button-hover rounded-full border border-border">
+            <Link to="/sign-in" className="flex items-center text-blue-500 gap-2 p-2 mr-2 hover:bg-button-hover rounded-full border border-border">
               <User size={24} />
               <p>Sign In</p>
             </Link>

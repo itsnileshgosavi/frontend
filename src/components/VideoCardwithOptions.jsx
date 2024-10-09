@@ -38,7 +38,7 @@ export default function VideoCardwithOptions({ video }) {
                     </p>
                 </div>
                 </Link>
-                <div className="absolute top-2 right-2">
+                <div className="absolute bottom-2 right-2">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="h-8 w-8 p-0">

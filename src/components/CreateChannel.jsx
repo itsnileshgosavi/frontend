@@ -48,7 +48,7 @@ const CreateChannelDialog = () => {
         { 
           channelId: channelHandle, 
           channelName: channelName,
-          avatar: avatarUrl
+          ...(avatarUrl ? { avatar: avatarUrl } : {})
         },
         { withCredentials: true }
       );

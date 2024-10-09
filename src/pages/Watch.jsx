@@ -13,6 +13,7 @@ import AddComment from '@/components/AddComment';
 import { Link } from 'react-router-dom';
 import ReactPlayer from 'react-player';
 import getRelativeTimeString from '@/lib/helper/dateConverter';
+import { formatViewCount } from '@/lib/helper/viewCountConverter';
 
 
 const VideoPage = () => {
@@ -28,12 +29,16 @@ const VideoPage = () => {
   const [isDisliked, setIsDisliked] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
   const [channelData, setChannelData] = useState(null);
+  const [likes, setLikes ] = useState(0);
+  const [dislikes, setDisikes ] = useState(0);
   //fetch video data
   const fetchVideoData = async () => {
     try {
       setLoading(true);
       const response = await axios.get(`http://localhost:8000/api/video/${videoId}`);
       setVideoData(response.data.video);
+      setLikes(response.data.video.likes);
+      setDisikes(response.data.video.dislikes)
     } catch (error) {
       console.error('Error fetching video data:', error);
     } finally {
@@ -122,8 +127,16 @@ const VideoPage = () => {
       let response;
       if (isLiked) {
         response = await axios.post(`http://localhost:8000/api/video/unlike/${videoData._id}`, {}, config);
+        if(response.data.success){
+          setLikes(likes-1)
+        }
+       
       } else {
         response = await axios.post(`http://localhost:8000/api/video/like/${videoData._id}`, {}, config);
+        if(response.data.success){
+          setLikes(likes+1)
+        }
+        
       }
       if (response.data.success) {
         setIsLiked(prev => !prev);
@@ -213,14 +226,14 @@ const VideoPage = () => {
             </Link>
             <div className="flex space-x-2 mt-2 sm:mt-0">
               {isSubscribed ?
-                <Button onClick={() => handleSubscribeClick()} variant="outline" className="bg-gray-800 text-white">Subscribed</Button> :
-                <Button onClick={() => handleSubscribeClick()}>Subscribe</Button>
+                <Button onClick={() => handleSubscribeClick()} variant="outline" className="bg-gray-800 text-white hover:text-white hover:bg-gray-700">Unsubscribe</Button> :
+                <Button onClick={() => handleSubscribeClick()} >Subscribe</Button>
               }
               <Button variant="outline" size="sm" onClick={() => { handleLikeClick() }} className={`${isLiked ? 'text-blue-500 hover:text-blue-500' : ''}`}>
-                <ThumbsUp className={`mr-2 h-4 w-4 ${isLiked ? 'text-blue-500' : ''}`} /> {isLiked ? videoData.likes + 1 : videoData.likes}
+                <ThumbsUp className={`mr-2 h-4 w-4 ${isLiked ? 'text-blue-500' : ''}`} /> {formatViewCount(likes)}
               </Button>
               <Button variant="outline" size="sm" onClick={() => { handleDislikeClick() }} className={`${isDisliked ? 'text-blue-500 hover:text-blue-500' : ''}`}>
-                <ThumbsDown className={`mr-2 h-4 w-4 ${isDisliked ? 'text-blue-500' : ''}`} /> {isDisliked ? videoData.dislikes + 1 : videoData.dislikes}
+                <ThumbsDown className={`mr-2 h-4 w-4 ${isDisliked ? 'text-blue-500' : ''}`} /> {formatViewCount(dislikes)}
               </Button>
               <Button variant="outline" size="sm">
                 <Share2 className="mr-2 h-4 w-4" /> Share

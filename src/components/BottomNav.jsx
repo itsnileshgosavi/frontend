@@ -1,5 +1,6 @@
 import React from 'react';
-import { Home, Compass, Plus, Youtube, User } from 'lucide-react';
+import { Home, Compass, PlaySquare, Youtube, User } from 'lucide-react';
+import { useSelector } from 'react-redux';
 
 const BottomNavbar = () => {
   return (
@@ -7,10 +8,9 @@ const BottomNavbar = () => {
       <div className="max-w-screen-xl mx-auto px-4">
         <ul className="flex justify-between items-center">
           <NavItem icon={<Home size={24} />} label="Home" />
-          <NavItem icon={<Compass size={24} />} label="Explore" />
-          <NavItem icon={<Plus size={32} className="text-primary" />} label="Create" />
+          <NavItem icon={<PlaySquare size={24} />} label="Shorts" />
           <NavItem icon={<Youtube size={24} />} label="Subscriptions" />
-          <NavItem icon={<User size={24} />} label="Library" />
+          <NavItem icon={<User size={24} />} label="You" />
         </ul>
       </div>
     </nav>
