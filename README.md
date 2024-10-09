@@ -23,6 +23,7 @@ This project is a YouTube clone built with modern web technologies, aiming to re
 - Redux Toolkit for efficient Redux development
 - Axios for API requests
 - React Router for navigation
+- React Player for video playback
 
 ### Backend
 - Node.js
@@ -38,12 +39,12 @@ This project is a YouTube clone built with modern web technologies, aiming to re
 
 1. Clone the repository
    ```
-   git clone https://github.com/itsnileshgosavi/youtube-clone.git
+   git clone https://github.com/itsnileshgosavi/youtube-clone-frontend.git
    ```
 
 2. Install dependencies
    ```
-   cd youtube-clone
+   cd youtube-clone-frontend
    npm install
    ```
 
