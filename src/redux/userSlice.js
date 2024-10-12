@@ -1,12 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 // Create an async thunk for fetching user data
 export const fetchUserData = createAsyncThunk(
     'user/fetchUserData',
     async (_, { rejectWithValue }) => {
       try {
-        const response = await axios.get('/api/user');
+        const response = await axios.get('https://youtube-backend-eight.vercel.app/api/user', { withCredentials: true });
         return response.data.user;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status === 401) {
