@@ -22,26 +22,26 @@ const Header = () => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn); //getting the logged in state
   const search = useSelector((state) => state.filter.search);
-  useEffect(() => {
-    const token = Cookies.get("authtoken");
-    if(token){
-      const getnewdata = async () => {
-        console.log(token);
-        try {
-          setLoading(true);
-          const response = await axios.get("https://youtube-backend-eight.vercel.app/api/user", {withCredentials: true});
-          if(response.data.success){
-            dispatch(setUser(response.data.user));
-          }
-        } catch (error) {
-          console.log(error);
-        } finally {
-          setLoading(false);
-        }
-      }
-      getnewdata();
-    }
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const token = Cookies.get("authtoken");
+  //   if(token){
+  //     const getnewdata = async () => {
+  //       console.log(token);
+  //       try {
+  //         setLoading(true);
+  //         const response = await axios.get("https://youtube-backend-eight.vercel.app/api/user", {withCredentials: true});
+  //         if(response.data.success){
+  //           dispatch(setUser(response.data.user));
+  //         }
+  //       } catch (error) {
+  //         console.log(error);
+  //       } finally {
+  //         setLoading(false);
+  //       }
+  //     }
+  //     getnewdata();
+  //   }
+  // }, [dispatch]);
   if (loading) return <Loading />;
   
   return (

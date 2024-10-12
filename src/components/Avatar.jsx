@@ -14,15 +14,28 @@ const AvatarComponent = () => {
     const { theme, setTheme } = useTheme();
     const user = useSelector((state) => state.user.user);
     const dispatch = useDispatch();
+    const token = Cookies.get("authtoken");
+    console.log(token);
     const handleLogout = async() => {
-        const response = await axios.post("https://youtube-backend-eight.vercel.app/api/user/logout", {withCredentials: true});
-      if(response.data.success) {
-          dispatch(setLogout());
-          Cookies.remove("authtoken");
-      } else {
-          console.log(response.data.message);
-      }
-    }
+        try {
+          const response = await axios.post(
+            "https://youtube-backend-eight.vercel.app/api/user/logout", 
+            {}, 
+            { withCredentials: true } 
+          );
+      
+          if (response.data.success) {
+            dispatch(setLogout());
+            // Attempt to remove cookie client-side, with correct options
+            Cookies.remove("authtoken", { path: '/', sameSite: 'None', secure: true });
+          } else {
+            console.log(response.data.message);
+          }
+        } catch (error) {
+          console.error("Error during logout:", error);
+        }
+      };
+      
     return (
         <>
             <DropdownMenu>
