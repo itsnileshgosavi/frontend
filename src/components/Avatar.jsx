@@ -13,7 +13,7 @@ const AvatarComponent = () => {
     const { theme, setTheme } = useTheme();
     const user = useSelector((state) => state.user.user);
     const handleLogout = async() => {
-        const response = await axios.get("https://youtube-backend-eight.vercel.app/api/logout", {withCredentials: true});
+        const response = await axios.post("https://youtube-backend-eight.vercel.app/api/user/logout", {withCredentials: true});
       if(response.data.success) {
           
           Cookies.remove("authtoken");
