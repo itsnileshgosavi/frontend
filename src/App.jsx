@@ -1,9 +1,15 @@
 import Header from "./components/Header"
 import { Outlet } from "react-router-dom"
 import BottomNavbar from "./components/BottomNav"
-
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { fetchUserData } from "./redux/userSlice";
 function App() {
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(fetchUserData());
+  }, [dispatch]);
 
   return (
     <>
