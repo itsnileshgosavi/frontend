@@ -7,10 +7,19 @@ import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import CreateChannelDialog from "./CreateChannel"
 import { Link } from "react-router-dom"
+import axios from "axios"
 
 const AvatarComponent = () => {
     const { theme, setTheme } = useTheme();
     const user = useSelector((state) => state.user.user);
+    const handleLogout = async() => {
+        const response = await axios.get("https://youtube-backend-eight.vercel.app/api/logout", {withCredentials: true});
+      if(response.data.success) {
+          
+          Cookies.remove("authtoken");
+          window.location.reload();
+      }
+    }
     return (
         <>
             <DropdownMenu>
@@ -43,8 +52,7 @@ const AvatarComponent = () => {
                             Switch Account
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => {
-                            Cookies.remove("authtoken");
-                            window.location.reload();
+                            handleLogout();
                         }}>
                             <LogOut className="mr-2" size={16} />
                             Sign Out
