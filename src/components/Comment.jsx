@@ -27,7 +27,7 @@ function Comment({ comment, refresh }) {
 
     const handleDelete = async () => {
         try {
-            const res = await axios.delete(`http://localhost:8000/api/comment/delete/${comment._id}`,{ withCredentials: true });
+            const res = await axios.delete(`https://youtube-backend-eight.vercel.app/api/comment/delete/${comment._id}`,{ withCredentials: true });
             if (res.data.success) {
                 console.log("Comment deleted");
                 refresh();
@@ -47,7 +47,7 @@ function Comment({ comment, refresh }) {
                 setError("Comment text cannot be empty");
                 return;
             }
-            const res = await axios.put(`http://localhost:8000/api/comment/edit/${videoId}`, { text: commentText, commentId: comment._id }, { withCredentials: true });
+            const res = await axios.put(`https://youtube-backend-eight.vercel.app/api/comment/edit/${videoId}`, { text: commentText, commentId: comment._id }, { withCredentials: true });
             if (res.data.success) {
                 setIsEditing(false);
             }
@@ -62,7 +62,7 @@ function Comment({ comment, refresh }) {
     return (
         <div className="flex space-x-4 mb-4">
             <Avatar className="h-8 w-8">
-                <AvatarImage src={`http://localhost:8000/api/uploads/${comment.user.profilePicture}`} />
+                <AvatarImage src={`https://youtube-backend-eight.vercel.app/api/uploads/${comment.user.profilePicture}`} />
                 <AvatarFallback>{comment.user.firstName.charAt(0).toUpperCase() + comment.user.lastName.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
             <div className="flex-grow">

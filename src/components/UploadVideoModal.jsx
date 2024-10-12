@@ -23,7 +23,7 @@ export default function UploadVideoModal({ open, onClose }) {
             if (thumbnail) {
                 const formData = new FormData();
                 formData.append('avatar', thumbnail);
-                const thumbnailresponse = await axios.post('http://localhost:8000/api/upload/avatar', formData, {
+                const thumbnailresponse = await axios.post('https://youtube-backend-eight.vercel.app/api/upload/avatar', formData, {
                     withCredentials: true,
                     headers: {
                         'Content-Type': 'multipart/form-data'
@@ -32,7 +32,7 @@ export default function UploadVideoModal({ open, onClose }) {
                 thumbnailUrl = thumbnailresponse.data.fileUrl;
             }
 
-            const response = await axios.post("http://localhost:8000/api/video/upload", { title, description, thumbnailUrl: thumbnailUrl, category, assetUrl }, {
+            const response = await axios.post("https://youtube-backend-eight.vercel.app/api/video/upload", { title, description, thumbnailUrl: thumbnailUrl, category, assetUrl }, {
                 withCredentials: true
             });
             if (response.data.success) {

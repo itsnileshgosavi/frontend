@@ -25,7 +25,7 @@ export default function EditVideoModal({ open, setOpen, video }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.put(`http://localhost:8000/api/video/edit/${video._id}`, {
+            const response = await axios.put(`https://youtube-backend-eight.vercel.app/api/video/edit/${video._id}`, {
                 title,
                 description,
                 thumbnailUrl,

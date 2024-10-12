@@ -32,7 +32,7 @@ const VideoCardList = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get("http://localhost:8000/api/videos");
+                const response = await axios.get("https://youtube-backend-eight.vercel.app/api/videos");
                 setVideos(response.data.videos);
             } catch (error) {
                 console.log(error);

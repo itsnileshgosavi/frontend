@@ -12,7 +12,7 @@ export default function VideoCardwithOptions({ video }) {
     
     const handleDelete = async () => {
         try {
-           const response = await axios.delete(`http://localhost:8000/api/video/delete/${video._id}`, {withCredentials: true});
+           const response = await axios.delete(`https://youtube-backend-eight.vercel.app/api/video/delete/${video._id}`, {withCredentials: true});
            if (response.data.success) {
             window.location.reload();
            }

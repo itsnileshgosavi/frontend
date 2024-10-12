@@ -35,7 +35,7 @@ const CreateChannelDialog = () => {
       if (avatar) {
         const formData = new FormData();
         formData.append('avatar', avatarFile);
-        const avatarResponse = await axios.post('http://localhost:8000/api/upload/avatar', formData, {
+        const avatarResponse = await axios.post('https://youtube-backend-eight.vercel.app/api/upload/avatar', formData, {
           withCredentials: true,
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -44,7 +44,7 @@ const CreateChannelDialog = () => {
         avatarUrl = avatarResponse.data.fileUrl;
       }
 
-      const response = await axios.post('http://localhost:8000/api/channel/create', 
+      const response = await axios.post('https://youtube-backend-eight.vercel.app/api/channel/create', 
         { 
           channelId: channelHandle, 
           channelName: channelName,

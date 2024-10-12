@@ -13,7 +13,7 @@ function CommentList({refresh, setCommentCount}) {
     const fetchComments = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`http://localhost:8000/api/comments/${videoId}`);
+            const response = await axios.get(`https://youtube-backend-eight.vercel.app/api/comments/${videoId}`);
             const sortedComments = response.data.comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             setComments(sortedComments);
             setCommentCount(response.data.comments.length);

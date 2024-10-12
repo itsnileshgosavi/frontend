@@ -27,7 +27,7 @@ const OwnChannelPage = () => {
     const fetchChannel = async () => {
 
       try {
-        const response = await axios.get(`http://localhost:8000/api/channel`, { withCredentials: true });
+        const response = await axios.get(`https://youtube-backend-eight.vercel.app/api/channel`, { withCredentials: true });
         setChannel(response.data.channel);
         console.log(response.data.channel);
       } catch (error) {
@@ -44,7 +44,7 @@ const OwnChannelPage = () => {
     try {
       setLoading(true);
       console.log(channel._id);
-      const response = await axios.get(`http://localhost:8000/api/videos/channel/${channel._id}`, { withCredentials: true });
+      const response = await axios.get(`https://youtube-backend-eight.vercel.app/api/videos/channel/${channel._id}`, { withCredentials: true });
       if (response.data.success) {
         setVideos(response.data.videos);
       }
@@ -91,7 +91,7 @@ const OwnChannelPage = () => {
     formData.append('banner', file);
     try {
       setLoading(true);
-      const response = await axios.post(`http://localhost:8000/api/upload/banner/${channel._id}`, formData, { withCredentials: true });
+      const response = await axios.post(`https://youtube-backend-eight.vercel.app/api/upload/banner/${channel._id}`, formData, { withCredentials: true });
       if(response.data.success){
         window.location.reload();
       }

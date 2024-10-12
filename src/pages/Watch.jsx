@@ -35,7 +35,7 @@ const VideoPage = () => {
   const fetchVideoData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:8000/api/video/${videoId}`);
+      const response = await axios.get(`https://youtube-backend-eight.vercel.app/api/video/${videoId}`);
       setVideoData(response.data.video);
       setLikes(response.data.video.likes);
       setDisikes(response.data.video.dislikes)
@@ -51,7 +51,7 @@ const VideoPage = () => {
   //fetch suggested videos
   const fetchSuggestedVideos = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/videos`);
+      const response = await axios.get(`https://youtube-backend-eight.vercel.app/api/videos`);
       if (response.data.success) {
         setSuggestedVideos(response.data.videos);
       }
@@ -62,7 +62,7 @@ const VideoPage = () => {
 
   const fetchChannelData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/channelbyid/${videoData.channel._id}`);
+      const response = await axios.get(`https://youtube-backend-eight.vercel.app/api/channelbyid/${videoData.channel._id}`);
       if (response.data.success) {
         setChannelData(response.data.channel);
       }
@@ -102,9 +102,9 @@ const VideoPage = () => {
 
       let response;
       if (isSubscribed) {
-        response = await axios.post(`http://localhost:8000/api/channel/unsubscribe/${channelData._id}`, {}, config);
+        response = await axios.post(`https://youtube-backend-eight.vercel.app/api/channel/unsubscribe/${channelData._id}`, {}, config);
       } else {
-        response = await axios.post(`http://localhost:8000/api/channel/subscribe/${channelData._id}`, {}, config);
+        response = await axios.post(`https://youtube-backend-eight.vercel.app/api/channel/subscribe/${channelData._id}`, {}, config);
       }
 
       if (response.data.success) {
@@ -126,13 +126,13 @@ const VideoPage = () => {
       };
       let response;
       if (isLiked) {
-        response = await axios.post(`http://localhost:8000/api/video/unlike/${videoData._id}`, {}, config);
+        response = await axios.post(`https://youtube-backend-eight.vercel.app/api/video/unlike/${videoData._id}`, {}, config);
         if(response.data.success){
           setLikes(likes-1)
         }
        
       } else {
-        response = await axios.post(`http://localhost:8000/api/video/like/${videoData._id}`, {}, config);
+        response = await axios.post(`https://youtube-backend-eight.vercel.app/api/video/like/${videoData._id}`, {}, config);
         if(response.data.success){
           setLikes(likes+1)
         }
@@ -158,9 +158,9 @@ const VideoPage = () => {
       };
       let response;
       if (isDisliked) {
-        response = await axios.post(`http://localhost:8000/api/video/undodislike/${videoData._id}`, {}, config);
+        response = await axios.post(`https://youtube-backend-eight.vercel.app/api/video/undodislike/${videoData._id}`, {}, config);
       } else {
-        response = await axios.post(`http://localhost:8000/api/video/dislike/${videoData._id}`, {}, config);
+        response = await axios.post(`https://youtube-backend-eight.vercel.app/api/video/dislike/${videoData._id}`, {}, config);
       }
       if (response.data.success) {
         setIsDisliked(prev => !prev);
@@ -172,7 +172,7 @@ const VideoPage = () => {
   };
   const increamentViews = async () => {
     try {
-      const res = axios.get(`http://localhost:8000/api/video/view/${videoData._id}`);
+      const res = axios.get(`https://youtube-backend-eight.vercel.app/api/video/view/${videoData._id}`);
       if (res.data.success) {
         console.log(res.data)
       }

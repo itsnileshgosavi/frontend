@@ -17,7 +17,7 @@ function AddComment({refresh}) {
         if (!newComment.trim()) return;
     
         try {
-          const response = await axios.post(`http://localhost:8000/api/comment/create/${videoId}`, {
+          const response = await axios.post(`https://youtube-backend-eight.vercel.app/api/comment/create/${videoId}`, {
             text: newComment
           }, {withCredentials: true});
           if (response.data.success) {

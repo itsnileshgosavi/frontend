@@ -25,7 +25,7 @@ const SignUp = () => {
       if (avatar) {
         const formData = new FormData();
         formData.append('avatar', avatar);
-        const avatarResponse = await axios.post('http://localhost:8000/api/upload/avatar', formData, {
+        const avatarResponse = await axios.post('https://youtube-backend-eight.vercel.app/api/upload/avatar', formData, {
           withCredentials: true,
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -34,7 +34,7 @@ const SignUp = () => {
         avatarUrl = avatarResponse.data.fileUrl;
       }
         
-        const response = await axios.post("http://localhost:8000/api/user/signup", {
+        const response = await axios.post("https://youtube-backend-eight.vercel.app/api/user/signup", {
           firstName: fname,
           lastName: lname,
           email,
