@@ -41,7 +41,7 @@ const Header = () => {
       }
       getnewdata();
     }
-  }, []);
+  }, [dispatch]);
   if (loading) return <Loading />;
   
   return (
