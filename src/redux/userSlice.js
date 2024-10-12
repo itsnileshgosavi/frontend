@@ -48,7 +48,8 @@ const userSlice = createSlice({
           .addCase(fetchUserData.rejected, (state, action) => {
             state.status = 'failed';
             state.error = action.error.message || null;
-            state.user = action.payload;
+            state.user = null;
+            state.isLoggedIn = false;
           });
       },
 });
