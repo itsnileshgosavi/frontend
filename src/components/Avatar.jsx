@@ -8,16 +8,16 @@ import Cookies from "js-cookie";
 import CreateChannelDialog from "./CreateChannel"
 import { Link } from "react-router-dom"
 import axios from "axios"
-
+import { setLogout } from "@/redux/userSlice"
+import { useDispatch } from "react-redux"
 const AvatarComponent = () => {
     const { theme, setTheme } = useTheme();
     const user = useSelector((state) => state.user.user);
+    const dispatch = useDispatch();
     const handleLogout = async() => {
         const response = await axios.post("https://youtube-backend-eight.vercel.app/api/user/logout", {withCredentials: true});
       if(response.data.success) {
-          
-          Cookies.remove("authtoken");
-          window.location.reload();
+          dispatch(setLogout());
       }
     }
     return (
