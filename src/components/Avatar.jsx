@@ -18,6 +18,9 @@ const AvatarComponent = () => {
         const response = await axios.post("https://youtube-backend-eight.vercel.app/api/user/logout", {withCredentials: true});
       if(response.data.success) {
           dispatch(setLogout());
+          Cookies.remove("authtoken");
+      } else {
+          console.log(response.data.message);
       }
     }
     return (
