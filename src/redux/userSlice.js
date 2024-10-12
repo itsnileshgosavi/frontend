@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // Create an async thunk for fetching user data
 export const fetchUserData = createAsyncThunk(
