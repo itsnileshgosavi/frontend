@@ -26,6 +26,7 @@ const Header = () => {
     const token = Cookies.get("authtoken");
     if(token){
       const getnewdata = async () => {
+        console.log(token);
         try {
           setLoading(true);
           const response = await axios.get("https://youtube-backend-eight.vercel.app/api/user", {withCredentials: true});
