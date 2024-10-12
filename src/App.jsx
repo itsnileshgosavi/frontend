@@ -8,7 +8,9 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchUserData());
+    if (dispatch) {
+      dispatch(fetchUserData());
+    }
   }, [dispatch]);
 
   return (
