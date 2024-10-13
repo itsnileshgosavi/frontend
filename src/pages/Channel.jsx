@@ -16,15 +16,13 @@ const ChannelPage = () => {
   const [isloading, setIsloading] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const user = useSelector((state) => state.user.user);
- 
   const params= useParams();
 
   //fetch channel data
   const fetchChannelData = async () => {
     setIsloading(true);
     try {
-      const chh = params.handle
-      if (!chh) {
+      if (!params.handle) {
         console.error('No channel handle available');
         return;
       }
@@ -33,7 +31,7 @@ const ChannelPage = () => {
       setIsnotfound(false);
     } catch (error) {
       console.log(error);
-      if(error.response.status === 404){
+      if(error.response && error.response.status === 404){
         setIsnotfound(true);
       }
       console.error('Error fetching channel data:', error);
@@ -45,6 +43,10 @@ const ChannelPage = () => {
   const fetchChannelVideos = async () => {
     try {
       setIsloading(true);
+      if(!data){
+        console.error("No channel selected");
+        return;
+      }
       console.log(data._id);
       const response = await axios.get(`https://youtube-backend-eight.vercel.app/api/videos/channel/${data._id}`, { withCredentials: true });
       if(response.data.success){
@@ -80,6 +82,10 @@ const ChannelPage = () => {
   //handle subscribe button
   const handleSubscribeClick = async () => {
     try {
+      if(!data){
+        console.error("No channel selected");
+        return;
+      }
       const config = {
         withCredentials: true,
         headers: {
@@ -212,5 +218,6 @@ const ChannelPage = () => {
     </div>
   );
 };
+
 
 export default ChannelPage;
